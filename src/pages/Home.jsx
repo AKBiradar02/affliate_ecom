@@ -16,12 +16,6 @@ function Home() {
             and quality. Every purchase supports our website through the Amazon 
             Associates Program.
           </p>
-          <Link 
-            to="/dashboard" 
-            className="inline-block px-6 py-3 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors"
-          >
-            Manage Products
-          </Link>
         </div>
       </section>
 
