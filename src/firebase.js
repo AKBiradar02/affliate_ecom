@@ -2,12 +2,13 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAg38GM8gzIKMQR1vs2aW6TgejZrmH7vk8",
+  authDomain: "affiliate-ecom-694b2.firebaseapp.com",
+  projectId: "affiliate-ecom-694b2",
+  storageBucket: "affiliate-ecom-694b2.firebasestorage.app",
+  messagingSenderId: "938022426554",
+  appId: "1:938022426554:web:033da5df06172b8c08ef83",
+  measurementId: "G-WXHMWNDVK1"
 };
 
 const app = initializeApp(firebaseConfig);
