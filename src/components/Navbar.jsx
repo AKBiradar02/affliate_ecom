@@ -15,7 +15,12 @@ function Navbar() {
           >
             Home
           </Link>
-          
+          <Link 
+            to="/products" 
+            className="text-white hover:text-blue-100 transition-colors"
+          >
+            Products
+          </Link>
           <Link 
             to="/dashboard" 
             className="text-white hover:text-blue-100 transition-colors"

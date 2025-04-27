@@ -3,9 +3,14 @@ import ProductManager from '../components/Dashboard/ProductManager';
 import AddProductForm from '../components/AddProductForm';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
 
+const ADMIN_PASSWORD = 'admin123'; // You can change this password
+
 function Dashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('manage');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleProductAdded = () => {
     setRefreshTrigger(prev => prev + 1);
@@ -17,6 +22,40 @@ function Dashboard() {
   const clickData = JSON.parse(localStorage.getItem('clickData') || '{}');
   const totalClicks = Object.values(clickData).reduce((sum, clicks) => sum + clicks, 0);
   const avgClicks = totalProducts > 0 ? (totalClicks / totalProducts).toFixed(1) : '0';
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsLoggedIn(true);
+      setError('');
+    } else {
+      setError('Incorrect password');
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-full max-w-sm">
+          <h2 className="text-xl font-bold mb-4 text-center">Admin Login</h2>
+          {error && <div className="mb-3 text-red-600 text-sm">{error}</div>}
+          <input
+            type="password"
+            placeholder="Enter admin password"
+            className="w-full px-3 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="w-full py-2 px-4 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 min-h-[calc(100vh-130px)] py-8 px-4">
