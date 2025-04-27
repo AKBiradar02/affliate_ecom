@@ -31,12 +31,14 @@ function ProductCard({ product }) {
           {description}
         </p>
         
-        <button 
-          className="w-full py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
-          onClick={handleClick}
+        <a
+          href={product.affiliateUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full block text-center py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
         >
           View on Amazon
-        </button>
+        </a>
       </div>
     </div>
   );
