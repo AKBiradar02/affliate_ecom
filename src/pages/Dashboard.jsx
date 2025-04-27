@@ -8,7 +8,7 @@ const ADMIN_PASSWORD = 'admin123'; // You can change this password
 function Dashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('manage');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isAdmin') === 'true');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -28,9 +28,15 @@ function Dashboard() {
     if (password === ADMIN_PASSWORD) {
       setIsLoggedIn(true);
       setError('');
+      localStorage.setItem('isAdmin', 'true');
     } else {
       setError('Incorrect password');
     }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('isAdmin');
   };
 
   if (!isLoggedIn) {
@@ -61,9 +67,17 @@ function Dashboard() {
     <div className="bg-gray-50 min-h-[calc(100vh-130px)] py-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="space-y-8">
-          <div>
-            <h1 className="text-2xl font-bold mb-2">Dashboard</h1>
-            <p className="text-gray-600">Manage your Amazon affiliate products</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold mb-2">Dashboard</h1>
+              <p className="text-gray-600">Manage your Amazon affiliate products</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="py-2 px-4 rounded bg-red-500 text-white font-medium hover:bg-red-600 transition-colors"
+            >
+              Logout
+            </button>
           </div>
 
           {/* Stats Section */}
@@ -73,13 +87,11 @@ function Dashboard() {
               <div className="text-3xl font-bold">{totalProducts}</div>
               <div className="text-sm text-gray-500 mt-1">Amazon Affiliate Links</div>
             </div>
-            
             <div className="bg-white p-5 rounded-lg shadow border border-gray-200">
               <div className="font-medium text-gray-500 mb-1">Total Clicks</div>
               <div className="text-3xl font-bold">{totalClicks}</div>
               <div className="text-sm text-gray-500 mt-1">Redirects to Amazon</div>
             </div>
-            
             <div className="bg-white p-5 rounded-lg shadow border border-gray-200">
               <div className="font-medium text-gray-500 mb-1">Avg. Clicks per Product</div>
               <div className="text-3xl font-bold">{avgClicks}</div>

@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+    // Listen for changes in localStorage (e.g., logout)
+    const onStorage = () => setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   return (
     <nav className="bg-blue-600 py-3 px-4 shadow-md sticky top-0 z-10">
@@ -24,7 +33,9 @@ function Navbar() {
         <div className="hidden md:flex gap-6">
           <Link to="/" className="text-white hover:text-blue-100 transition-colors">Home</Link>
           <Link to="/products" className="text-white hover:text-blue-100 transition-colors">Products</Link>
-          <Link to="/dashboard" className="text-white hover:text-blue-100 transition-colors">Dashboard</Link>
+          {isAdmin && (
+            <Link to="/dashboard" className="text-white hover:text-blue-100 transition-colors">Dashboard</Link>
+          )}
         </div>
       </div>
       {/* Mobile Dropdown Menu */}
@@ -32,7 +43,9 @@ function Navbar() {
         <div className="md:hidden mt-2 bg-blue-600 rounded shadow-lg flex flex-col gap-2 px-4 py-3 animate-fade-in">
           <Link to="/" className="text-white py-1" onClick={() => setMenuOpen(false)}>Home</Link>
           <Link to="/products" className="text-white py-1" onClick={() => setMenuOpen(false)}>Products</Link>
-          <Link to="/dashboard" className="text-white py-1" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+          {isAdmin && (
+            <Link to="/dashboard" className="text-white py-1" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+          )}
         </div>
       )}
     </nav>
