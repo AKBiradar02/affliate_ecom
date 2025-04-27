@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
 
-function ProductList() {
+function ProductList({ maxItems }) {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,7 +18,7 @@ function ProductList() {
       const sortedLinks = [...affiliateLinks].sort((a, b) => 
         new Date(b.createdAt) - new Date(a.createdAt)
       );
-      setProducts(sortedLinks);
+      setProducts(maxItems ? sortedLinks.slice(0, maxItems) : sortedLinks);
     } catch (error) {
       console.error('Error loading products:', error);
     } finally {
