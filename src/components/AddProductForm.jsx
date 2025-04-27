@@ -10,7 +10,7 @@ function AddProductForm({ onSuccess }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -28,7 +28,7 @@ function AddProductForm({ onSuccess }) {
     setIsLoading(true);
     
     try {
-      const newProduct = saveAffiliateLink(title, description, imageUrl, affiliateUrl);
+      const newProduct = await saveAffiliateLink(title, description, imageUrl, affiliateUrl);
       
       // Reset form
       setTitle('');

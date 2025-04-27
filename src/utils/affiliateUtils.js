@@ -1,32 +1,29 @@
-// Helper function to save affiliate links to localStorage
-export const saveAffiliateLink = (title, description, imageUrl, affiliateUrl) => {
-  const links = getAffiliateLinks();
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { db } from '../firebase';
+
+// Add a new product to Firestore
+export const saveAffiliateLink = async (title, description, imageUrl, affiliateUrl) => {
   const newLink = {
-    id: Date.now().toString(),
     title,
     description,
     imageUrl,
     affiliateUrl,
     createdAt: new Date().toISOString(),
   };
-  
-  links.push(newLink);
-  localStorage.setItem('affiliateLinks', JSON.stringify(links));
-  return newLink;
+  const docRef = await addDoc(collection(db, 'products'), newLink);
+  return { id: docRef.id, ...newLink };
 };
 
-// Helper function to get all affiliate links from localStorage
-export const getAffiliateLinks = () => {
-  const links = localStorage.getItem('affiliateLinks');
-  return links ? JSON.parse(links) : [];
+// Get all products from Firestore, sorted by newest first
+export const getAffiliateLinks = async () => {
+  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// Helper function to delete an affiliate link
-export const deleteAffiliateLink = (id) => {
-  const links = getAffiliateLinks();
-  const updatedLinks = links.filter(link => link.id !== id);
-  localStorage.setItem('affiliateLinks', JSON.stringify(updatedLinks));
-  return updatedLinks;
+// Delete a product from Firestore
+export const deleteAffiliateLink = async (id) => {
+  await deleteDoc(doc(db, 'products', id));
 };
 
 // Helper function for redirecting to Amazon with affiliate link

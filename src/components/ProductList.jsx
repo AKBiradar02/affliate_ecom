@@ -8,17 +8,14 @@ function ProductList({ maxItems }) {
 
   useEffect(() => {
     loadProducts();
+    // eslint-disable-next-line
   }, []);
 
-  const loadProducts = () => {
+  const loadProducts = async () => {
     setIsLoading(true);
     try {
-      const affiliateLinks = getAffiliateLinks();
-      // Sort by newest first
-      const sortedLinks = [...affiliateLinks].sort((a, b) => 
-        new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      setProducts(maxItems ? sortedLinks.slice(0, maxItems) : sortedLinks);
+      const affiliateLinks = await getAffiliateLinks();
+      setProducts(maxItems ? affiliateLinks.slice(0, maxItems) : affiliateLinks);
     } catch (error) {
       console.error('Error loading products:', error);
     } finally {

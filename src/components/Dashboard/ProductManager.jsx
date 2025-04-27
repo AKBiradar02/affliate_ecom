@@ -6,15 +6,24 @@ function ProductManager() {
   const [products, setProducts] = useState([]);
   const [clickData, setClickData] = useState({});
   const [message, setMessage] = useState({ text: '', type: '' });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadProducts();
     loadClickData();
+    // eslint-disable-next-line
   }, []);
 
-  const loadProducts = () => {
-    const affiliateLinks = getAffiliateLinks();
-    setProducts(affiliateLinks);
+  const loadProducts = async () => {
+    setIsLoading(true);
+    try {
+      const affiliateLinks = await getAffiliateLinks();
+      setProducts(affiliateLinks);
+    } catch (error) {
+      setMessage({ text: 'Error loading products', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const loadClickData = () => {
@@ -22,9 +31,9 @@ function ProductManager() {
     setClickData(data ? JSON.parse(data) : {});
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     try {
-      deleteAffiliateLink(id);
+      await deleteAffiliateLink(id);
       loadProducts();
       setMessage({ text: 'Product deleted', type: 'success' });
       setTimeout(() => setMessage({ text: '', type: '' }), 3000);
@@ -34,15 +43,20 @@ function ProductManager() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-10">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-end mb-4">
         <button 
           className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-          onClick={() => {
-            loadProducts();
-            loadClickData();
-          }}
+          onClick={loadProducts}
         >
           Refresh
         </button>
