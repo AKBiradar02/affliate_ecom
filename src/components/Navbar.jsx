@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setIsAdmin(localStorage.getItem('isAdmin') === 'true');
@@ -30,11 +31,16 @@ function Navbar() {
           </svg>
         </button>
         {/* Desktop Menu */}
-        <div className="hidden md:flex gap-6">
+        <div className="hidden md:flex gap-6 items-center">
           <Link to="/" className="text-white hover:text-blue-100 transition-colors">Home</Link>
           <Link to="/products" className="text-white hover:text-blue-100 transition-colors">Products</Link>
           {isAdmin && (
-            <Link to="/dashboard" className="text-white hover:text-blue-100 transition-colors">Dashboard</Link>
+            <Link
+              to="/dashboard"
+              className={`ml-2 px-4 py-2 rounded bg-white text-blue-600 font-semibold hover:bg-blue-100 transition-colors ${location.pathname === '/dashboard' ? 'ring-2 ring-blue-400' : ''}`}
+            >
+              Manage Products
+            </Link>
           )}
         </div>
       </div>
@@ -44,7 +50,13 @@ function Navbar() {
           <Link to="/" className="text-white py-1" onClick={() => setMenuOpen(false)}>Home</Link>
           <Link to="/products" className="text-white py-1" onClick={() => setMenuOpen(false)}>Products</Link>
           {isAdmin && (
-            <Link to="/dashboard" className="text-white py-1" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+            <Link
+              to="/dashboard"
+              className="text-blue-600 bg-white rounded px-4 py-2 font-semibold text-center"
+              onClick={() => setMenuOpen(false)}
+            >
+              Manage Products
+            </Link>
           )}
         </div>
       )}
