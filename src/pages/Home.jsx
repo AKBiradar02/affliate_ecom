@@ -41,7 +41,7 @@ function Home() {
             </div>
             <div className="flex-1">
               <img 
-                src="https://images.unsplash.com/photo-1607082350899-7e105aa886ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80" 
+                src="https://img.freepik.com/premium-photo/full-length-woman-using-phone_1048944-13877822.jpg?ga=GA1.1.575653788.1738306651&semt=ais_hybrid&w=740" 
                 alt="Shopping online"
                 className="rounded-lg shadow-xl w-full h-auto object-cover"
               />
