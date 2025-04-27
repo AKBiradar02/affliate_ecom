@@ -27,16 +27,8 @@ export const deleteAffiliateLink = async (id) => {
 };
 
 // Helper function for redirecting to Amazon with affiliate link
-export const redirectToAffiliate = (id) => {
-  const links = getAffiliateLinks();
-  const link = links.find(link => link.id === id);
-  
-  if (link) {
-    // Optionally track click before redirect
-    trackClick(id);
-    window.location.href = link.affiliateUrl;
-  }
-  return null;
+export const redirectToAffiliate = (affiliateUrl) => {
+  window.location.href = affiliateUrl;
 };
 
 // Helper function to track clicks (can be expanded with analytics)
