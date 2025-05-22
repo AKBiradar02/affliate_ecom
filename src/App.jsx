@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
+import Blog from './pages/Blog';
 import Dashboard from './pages/Dashboard';
 import ProductsPage from './pages/ProductsPage';
 import './App.css';
+
 
 function App() {
   const [error, setError] = useState(null);
@@ -38,6 +40,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/blog" element={<Blog />} />
           </Routes>
         </main>
         <Footer />

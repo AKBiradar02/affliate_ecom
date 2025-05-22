@@ -5,8 +5,8 @@ function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="bg-white py-10 px-4">
+        <div className="max-w-4xl mx-auto text-center space-x-4">
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
             Find the best <br />
             <span className="text-blue-600">Amazon products</span>
@@ -16,6 +16,12 @@ function Home() {
             and quality. Every purchase supports our website through the Amazon 
             Associates Program.
           </p>
+
+          <button>
+            <Link to="/blog" className="bg-blue-600 text-white py-3 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300">
+              Blogs
+            </Link>
+          </button>
         </div>
       </section>
 

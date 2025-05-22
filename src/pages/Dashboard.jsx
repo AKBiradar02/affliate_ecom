@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ProductManager from '../components/Dashboard/ProductManager';
 import AddProductForm from '../components/AddProductForm';
+import AddBlogForm from '../components/Dashboard/AddBlogForm'; // ✅ NEW
 import { getAffiliateLinks } from '../utils/affiliateUtils';
 
 const ADMIN_PASSWORD = 'admin123'; // You can change this password
@@ -16,7 +17,6 @@ function Dashboard() {
     setRefreshTrigger(prev => prev + 1);
   };
 
-  // Calculate stats
   const products = getAffiliateLinks();
   const totalProducts = products.length;
   const clickData = JSON.parse(localStorage.getItem('clickData') || '{}');
@@ -70,7 +70,7 @@ function Dashboard() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold mb-2">Dashboard</h1>
-              <p className="text-gray-600">Manage your Amazon affiliate products</p>
+              <p className="text-gray-600">Manage your Amazon affiliate products and tech blogs</p>
             </div>
             <button
               onClick={handleLogout}
@@ -101,35 +101,43 @@ function Dashboard() {
 
           <hr className="border-gray-200" />
 
-          {/* Content Tabs */}
+          {/* Tabs */}
           <div className="bg-white rounded-lg shadow border border-gray-200">
             <div className="border-b border-gray-200">
               <nav className="flex">
                 <button
-                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                    activeTab === 'manage'
+                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'manage'
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                    }`}
                   onClick={() => setActiveTab('manage')}
                 >
                   Manage Products
                 </button>
                 <button
-                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                    activeTab === 'add'
+                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'add'
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                    }`}
                   onClick={() => setActiveTab('add')}
                 >
                   Add New Product
+                </button>
+                <button
+                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'addBlog'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  onClick={() => setActiveTab('addBlog')}
+                >
+                  Add Blog Post
                 </button>
               </nav>
             </div>
             <div className="p-6">
               {activeTab === 'manage' && <ProductManager key={refreshTrigger} />}
               {activeTab === 'add' && <AddProductForm onSuccess={handleProductAdded} />}
+              {activeTab === 'addBlog' && <AddBlogForm />} {/* ✅ NEW */}
             </div>
           </div>
         </div>
@@ -138,4 +146,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard; 
+export default Dashboard;
