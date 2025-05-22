@@ -2,20 +2,22 @@ import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
 
-function ProductList({ maxItems }) {
+function ProductList({ maxItems, category }) {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadProducts();
-    // eslint-disable-next-line
-  }, []);
+  }, [category]);
 
   const loadProducts = async () => {
     setIsLoading(true);
     try {
-      const affiliateLinks = await getAffiliateLinks();
-      setProducts(maxItems ? affiliateLinks.slice(0, maxItems) : affiliateLinks);
+      const all = await getAffiliateLinks();
+      const filtered = category && category !== 'All'
+        ? all.filter(p => p.category === category)
+        : all;
+      setProducts(maxItems ? filtered.slice(0, maxItems) : filtered);
     } catch (error) {
       console.error('Error loading products:', error);
     } finally {
@@ -44,7 +46,7 @@ function ProductList({ maxItems }) {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Amazon Affiliate Products</h2>
-        <button 
+        <button
           className="px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           onClick={loadProducts}
         >
@@ -61,4 +63,4 @@ function ProductList({ maxItems }) {
   );
 }
 
-export default ProductList; 
+export default ProductList;

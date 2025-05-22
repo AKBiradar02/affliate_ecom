@@ -1,47 +1,30 @@
-import { useNavigate } from 'react-router-dom';
 import { redirectToAffiliate } from '../utils/affiliateUtils';
 
 function ProductCard({ product }) {
-  const { id, title, description, imageUrl, affiliateUrl } = product;
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    redirectToAffiliate(id);
-  };
-
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-transform hover:-translate-y-1">
-      <div className="relative">
-        <img 
-          src={imageUrl || 'https://via.placeholder.com/300x200?text=Product+Image'} 
-          alt={title}
-          className="h-48 w-full object-cover"
-        />
-        <span className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
-          Amazon
-        </span>
-      </div>
+    <div className="bg-white border border-gray-200 rounded-lg shadow p-4 flex flex-col h-full">
+      <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.title}</h3>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2 line-clamp-2">
-          {title}
-        </h3>
-        
-        <p className="text-gray-600 mb-4 line-clamp-3">
-          {description}
-        </p>
-        
-        <a
-          href={product.affiliateUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full block text-center py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
-        >
-          View on Amazon
-        </a>
-      </div>
+      {product.category && (
+        <div className="mb-2">
+          <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded">
+            {product.category}
+          </span>
+        </div>
+      )}
+
+      {product.description && (
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{product.description}</p>
+      )}
+
+      <button
+        onClick={() => redirectToAffiliate(product.affiliateUrl)}
+        className="mt-auto w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
+      >
+        Buy Now
+      </button>
     </div>
   );
 }
 
-export default ProductCard; 
+export default ProductCard;
