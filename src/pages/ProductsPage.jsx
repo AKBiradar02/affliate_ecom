@@ -5,8 +5,8 @@ function ProductsPage() {
   const [category, setCategory] = useState('All');
 
   return (
-    <div className="bg-gray-50 min-h-[calc(100vh-130px)] py-8 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="w-full bg-gray-50 min-h-screen py-8 px-4">
+      <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">All Products</h1>
 
         {/* Category Dropdown Filter */}

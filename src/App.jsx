@@ -8,7 +8,6 @@ import Dashboard from './pages/Dashboard';
 import ProductsPage from './pages/ProductsPage';
 import './App.css';
 
-
 function App() {
   const [error, setError] = useState(null);
 
@@ -33,9 +32,9 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col w-full">
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-1 w-full">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />

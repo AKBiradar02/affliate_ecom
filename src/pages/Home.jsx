@@ -3,10 +3,10 @@ import ProductList from '../components/ProductList';
 
 function Home() {
   return (
-    <div>
+    <div className="w-full">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20 px-4">
+        <div className="container mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
             Discover Amazing <br />
             <span className="text-yellow-400">Amazon Products</span>
@@ -33,8 +33,8 @@ function Home() {
       </section>
 
       {/* Featured Products Section */}
-      <section className="bg-gray-50 py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="w-full bg-gray-50 py-20 px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Products</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -46,8 +46,8 @@ function Home() {
       </section>
 
       {/* Info Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
+      <section className="w-full py-20 px-4 bg-white">
+        <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="flex-1 space-y-6">
               <h2 className="text-4xl font-bold text-gray-900">Why Shop With Us?</h2>
