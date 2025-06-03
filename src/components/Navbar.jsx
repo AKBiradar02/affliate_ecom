@@ -5,78 +5,34 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white py-4 px-6 shadow-md sticky top-0 z-50">
+    <nav className="bg-blue-600 py-3 px-4 shadow-md sticky top-0 z-10">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text">
+        <div className="flex items-center gap-2">
+          <Link to="/" className="text-2xl font-bold text-white tracking-wide">
             AffiliStore
-          </span>
-        </Link>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Home
-          </Link>
-          <Link to="/products" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Products
-          </Link>
-          <Link to="/blog" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Blog
-          </Link>
-          <Link 
-            to="/products" 
-            className="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors"
-          >
-            Shop Now
           </Link>
         </div>
-
-        {/* Mobile Menu Button */}
+        {/* Hamburger Icon for Mobile */}
         <button
-          className="md:hidden text-gray-700 focus:outline-none"
+          className="md:hidden text-white focus:outline-none"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+        {/* Desktop Menu */}
+        <div className="hidden md:flex gap-6 items-center">
+          <Link to="/" className="text-white hover:text-blue-100 transition-colors">Home</Link>
+          <Link to="/products" className="text-white hover:text-blue-100 transition-colors">Products</Link>
+        </div>
       </div>
-
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg animate-fade-in">
-          <div className="flex flex-col p-4 space-y-4">
-            <Link 
-              to="/" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link 
-              to="/products" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Products
-            </Link>
-            <Link 
-              to="/blog" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Blog
-            </Link>
-            <Link 
-              to="/products" 
-              className="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors text-center"
-              onClick={() => setMenuOpen(false)}
-            >
-              Shop Now
-            </Link>
-          </div>
+        <div className="md:hidden mt-2 bg-blue-600 rounded shadow-lg flex flex-col gap-2 px-4 py-3 animate-fade-in">
+          <Link to="/" className="text-white py-1" onClick={() => setMenuOpen(false)}>Home</Link>
+          <Link to="/products" className="text-white py-1" onClick={() => setMenuOpen(false)}>Products</Link>
         </div>
       )}
     </nav>
