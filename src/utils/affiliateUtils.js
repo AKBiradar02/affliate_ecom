@@ -1,35 +1,66 @@
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
-
-// Save product without image
-export const saveAffiliateLink = async (title, description, affiliateUrl, category) => {
-  const newLink = {
-    title,
-    description,
-    affiliateUrl,
-    category,
-    createdAt: new Date().toISOString(),
-  };
-  const docRef = await addDoc(collection(db, 'products'), newLink);
-  return { id: docRef.id, ...newLink };
-};
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../firebase.js"; // Fixed import
 
 export const getAffiliateLinks = async () => {
-  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const snapshot = await getDocs(collection(db, "products"));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
+
+
+const API_BASE = "https://us-central1-affiliate-ecom-694b2.cloudfunctions.net";
+
+export const addAffiliateLink = async (productData) => {
+  const password = localStorage.getItem("adminPassword");
+
+  const res = await fetch(`${API_BASE}/addProduct`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...productData, password }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to add product");
+  }
+
+  return res.json();
 };
 
 export const deleteAffiliateLink = async (id) => {
-  await deleteDoc(doc(db, 'products', id));
+  const password = localStorage.getItem("adminPassword");
+
+  const res = await fetch(`${API_BASE}/deleteProduct`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, password }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete product");
+  }
 };
 
-export const redirectToAffiliate = (affiliateUrl) => {
-  window.location.href = affiliateUrl;
+export const addBlogPost = async (blogData) => {
+  const password = localStorage.getItem("adminPassword");
+
+  const res = await fetch(`${API_BASE}/addBlog`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...blogData, password }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to add blog");
+  }
+
+  return res.json();
 };
 
-export const trackClick = (id) => {
-  const clickData = JSON.parse(localStorage.getItem('clickData') || '{}');
-  clickData[id] = (clickData[id] || 0) + 1;
-  localStorage.setItem('clickData', JSON.stringify(clickData));
+export const redirectToAffiliate = (url) => {
+  window.open(url, '_blank');
 };

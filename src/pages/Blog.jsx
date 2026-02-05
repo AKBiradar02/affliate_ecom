@@ -1,6 +1,6 @@
 // src/pages/Blog.jsx
 import { useEffect, useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../firebase.js';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 function Blog() {

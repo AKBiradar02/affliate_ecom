@@ -3,6 +3,19 @@ import { redirectToAffiliate } from '../utils/affiliateUtils';
 function ProductCard({ product }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow p-4 flex flex-col h-full">
+      {product.imageUrl && (
+        <div className="mb-3 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center" style={{ height: '200px' }}>
+          <img
+            src={product.imageUrl}
+            alt={product.title}
+            className="w-full h-full object-contain"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        </div>
+      )}
+
       <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.title}</h3>
 
       {product.category && (
@@ -11,6 +24,10 @@ function ProductCard({ product }) {
             {product.category}
           </span>
         </div>
+      )}
+
+      {product.price && (
+        <p className="text-xl font-bold text-green-600 mb-2">{product.price}</p>
       )}
 
       {product.description && (

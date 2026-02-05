@@ -26,6 +26,7 @@ function Navbar() {
         <div className="hidden md:flex gap-6 items-center">
           <Link to="/" className="text-white hover:text-blue-100 transition-colors">Home</Link>
           <Link to="/products" className="text-white hover:text-blue-100 transition-colors">Products</Link>
+          <Link to="/blog" className="text-white hover:text-blue-100 transition-colors">Blog</Link>
         </div>
       </div>
       {/* Mobile Dropdown Menu */}
@@ -33,6 +34,7 @@ function Navbar() {
         <div className="md:hidden mt-2 bg-blue-600 rounded shadow-lg flex flex-col gap-2 px-4 py-3 animate-fade-in">
           <Link to="/" className="text-white py-1" onClick={() => setMenuOpen(false)}>Home</Link>
           <Link to="/products" className="text-white py-1" onClick={() => setMenuOpen(false)}>Products</Link>
+          <Link to="/blog" className="text-white py-1" onClick={() => setMenuOpen(false)}>Blog</Link>
         </div>
       )}
     </nav>

@@ -1,28 +1,51 @@
 import { useState } from 'react';
-import { db } from '../../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 function AddBlogForm({ onBlogAdded }) {
     const [title, setTitle] = useState('');
     const [summary, setSummary] = useState('');
     const [message, setMessage] = useState('');
 
+    const auth = getAuth();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage('');
+
         try {
-            await addDoc(collection(db, 'blogs'), {
-                title,
-                summary,
-                date: new Date().toLocaleDateString(),
-                createdAt: serverTimestamp()
+            const user = auth.currentUser;
+            if (!user) {
+                throw new Error('User not authenticated');
+            }
+            const token = await user.getIdToken();
+
+            const res = await fetch('https://addblog-fpqz4j4kvq-uc.a.run.app', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    title,
+                    summary,
+                    createdAt: new Date().toISOString(),
+                }),
             });
-            setTitle('');
-            setSummary('');
-            setMessage('✅ Blog uploaded successfully!');
-            onBlogAdded?.();
+
+            const isJson = res.headers.get('content-type')?.includes('application/json');
+            const text = await (isJson ? res.json() : res.text());
+
+            if (res.ok) {
+                setTitle('');
+                setSummary('');
+                setMessage('✅ Blog uploaded successfully!');
+                onBlogAdded?.();
+            } else {
+                setMessage(`❌ ${isJson ? text.message : text}`);
+            }
         } catch (error) {
-            console.error(error);
-            setMessage('❌ Failed to upload blog.');
+            console.error('Add Blog Error:', error);
+            setMessage(`❌ ${error.message || 'Failed to upload blog. Check authentication or function setup.'}`);
         }
     };
 

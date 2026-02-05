@@ -14,13 +14,18 @@ function ProductManager() {
     // eslint-disable-next-line
   }, []);
 
-  const loadProducts = async () => {
+  const loadProducts = async (retryCount = 0) => {
     setIsLoading(true);
     try {
       const affiliateLinks = await getAffiliateLinks();
       setProducts(affiliateLinks);
+      setMessage({ text: '', type: '' });
     } catch (error) {
-      setMessage({ text: 'Error loading products', type: 'error' });
+      if (retryCount < 2) {
+        setTimeout(() => loadProducts(retryCount + 1), 1000); // Retry up to 2 times
+      } else {
+        setMessage({ text: `Error loading products: ${error.message}`, type: 'error' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -38,7 +43,7 @@ function ProductManager() {
       setMessage({ text: 'Product deleted', type: 'success' });
       setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     } catch (error) {
-      setMessage({ text: 'Error deleting product', type: 'error' });
+      setMessage({ text: `Error deleting product: ${error.message}`, type: 'error' });
       setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     }
   };
@@ -54,18 +59,19 @@ function ProductManager() {
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-end mb-4">
-        <button 
+        <button
           className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-          onClick={loadProducts}
+          onClick={() => loadProducts()}
         >
           Refresh
         </button>
       </div>
 
       {message.text && (
-        <div className={`p-3 mb-4 rounded ${
-          message.type === 'success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
-        }`}>
+        <div
+          className={`p-3 mb-4 rounded ${message.type === 'success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+            }`}
+        >
           {message.text}
         </div>
       )}
@@ -73,7 +79,6 @@ function ProductManager() {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Link</th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clicks</th>
@@ -90,26 +95,14 @@ function ProductManager() {
             </tr>
           ) : (
             products.map((product) => (
-              <tr 
-                key={product.id} 
-                className="hover:bg-gray-50"
-              >
-                <td className="px-4 py-3 whitespace-nowrap w-20">
-                  <img
-                    src={product.imageUrl || 'https://via.placeholder.com/50x50?text=No+Image'}
-                    alt={product.title}
-                    className="h-12 w-12 object-cover rounded"
-                  />
-                </td>
+              <tr key={product.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-gray-900 line-clamp-2">
-                    {product.title}
-                  </p>
+                  <p className="font-medium text-gray-900 line-clamp-2">{product.title}</p>
                 </td>
                 <td className="px-4 py-3 max-w-xs truncate">
-                  <a 
-                    href={product.affiliateUrl} 
-                    target="_blank" 
+                  <a
+                    href={product.affiliateUrl}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 flex items-center"
                   >
@@ -143,4 +136,4 @@ function ProductManager() {
   );
 }
 
-export default ProductManager; 
+export default ProductManager;

@@ -1,42 +1,85 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import ProductManager from '../components/Dashboard/ProductManager';
 import AddProductForm from '../components/AddProductForm';
-import AddBlogForm from '../components/Dashboard/AddBlogForm'; // ✅ NEW
+import AddBlogForm from '../components/Dashboard/AddBlogForm';
+import AmazonProductSearch from '../components/AmazonProductSearch';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
-
-const ADMIN_PASSWORD = 'admin123'; // You can change this password
 
 function Dashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('manage');
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isAdmin') === 'true');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedAmazonProduct, setSelectedAmazonProduct] = useState(null);
 
-  const handleProductAdded = () => {
-    setRefreshTrigger(prev => prev + 1);
+  const auth = getAuth();
+
+  useEffect(() => {
+    // Check if user is logged in
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setIsLoggedIn(!!user);
+      if (user) {
+        loadProducts();
+      } else {
+        setIsLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const loadProducts = async () => {
+    setIsLoading(true);
+    try {
+      const affiliateLinks = await getAffiliateLinks();
+      setProducts(affiliateLinks);
+    } catch (err) {
+      setError('Failed to load products');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const products = getAffiliateLinks();
+  const handleProductAdded = () => {
+    setRefreshTrigger((prev) => prev + 1);
+    loadProducts();
+    setSelectedAmazonProduct(null);
+  };
+
+  const handleAmazonProductSelect = (productData) => {
+    setSelectedAmazonProduct(productData);
+    setActiveTab('add');
+  };
+
   const totalProducts = products.length;
   const clickData = JSON.parse(localStorage.getItem('clickData') || '{}');
   const totalClicks = Object.values(clickData).reduce((sum, clicks) => sum + clicks, 0);
   const avgClicks = totalProducts > 0 ? (totalClicks / totalProducts).toFixed(1) : '0';
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    setError('');
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       setIsLoggedIn(true);
-      setError('');
-      localStorage.setItem('isAdmin', 'true');
-    } else {
-      setError('Incorrect password');
+      setEmail('');
+      setPassword('');
+    } catch (err) {
+      setError('Incorrect email or password');
     }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('isAdmin');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setIsLoggedIn(false);
+    } catch (err) {
+      setError('Failed to log out');
+    }
   };
 
   if (!isLoggedIn) {
@@ -46,11 +89,20 @@ function Dashboard() {
           <h2 className="text-xl font-bold mb-4 text-center">Admin Login</h2>
           {error && <div className="mb-3 text-red-600 text-sm">{error}</div>}
           <input
+            type="email"
+            placeholder="Enter admin email"
+            className="w-full px-3 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
             type="password"
             placeholder="Enter admin password"
             className="w-full px-3 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <button
             type="submit"
@@ -59,6 +111,14 @@ function Dashboard() {
             Login
           </button>
         </form>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-10">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -107,17 +167,26 @@ function Dashboard() {
               <nav className="flex">
                 <button
                   className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'manage'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   onClick={() => setActiveTab('manage')}
                 >
                   Manage Products
                 </button>
                 <button
+                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'search'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  onClick={() => setActiveTab('search')}
+                >
+                  Amazon Search
+                </button>
+                <button
                   className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'add'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   onClick={() => setActiveTab('add')}
                 >
@@ -125,8 +194,8 @@ function Dashboard() {
                 </button>
                 <button
                   className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'addBlog'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   onClick={() => setActiveTab('addBlog')}
                 >
@@ -136,8 +205,16 @@ function Dashboard() {
             </div>
             <div className="p-6">
               {activeTab === 'manage' && <ProductManager key={refreshTrigger} />}
-              {activeTab === 'add' && <AddProductForm onSuccess={handleProductAdded} />}
-              {activeTab === 'addBlog' && <AddBlogForm />} {/* ✅ NEW */}
+              {activeTab === 'search' && (
+                <AmazonProductSearch onProductSelect={handleAmazonProductSelect} />
+              )}
+              {activeTab === 'add' && (
+                <AddProductForm
+                  onSuccess={handleProductAdded}
+                  initialData={selectedAmazonProduct}
+                />
+              )}
+              {activeTab === 'addBlog' && <AddBlogForm />}
             </div>
           </div>
         </div>
