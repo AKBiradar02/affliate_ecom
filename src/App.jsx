@@ -8,7 +8,6 @@ import Dashboard from './pages/Dashboard';
 import ProductsPage from './pages/ProductsPage';
 import './App.css';
 
-
 function App() {
   const [error, setError] = useState(null);
 
