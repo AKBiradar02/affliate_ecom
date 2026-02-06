@@ -65,7 +65,7 @@ def is_cache_valid(category: str) -> bool:
     return datetime.now() - cache_timestamp[category] < CACHE_DURATION
 
 
-def fetch_deals_from_amazon(category: str, max_items: int = 20) -> List[Dict]:
+def fetch_deals_from_amazon(category: str, max_items: int = 10) -> List[Dict]:
     """Fetch deals from Amazon PA-API"""
     try:
         logger.info(f"Fetching deals for category: {category}")
