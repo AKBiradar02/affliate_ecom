@@ -139,7 +139,7 @@ function MoreCollections() {
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product.id}
-                                        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 relative"
+                                        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 relative flex flex-col"
                                     >
                                         {/* Platform & Type Badges */}
                                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
@@ -169,8 +169,8 @@ function MoreCollections() {
                                             </div>
                                         )}
 
-                                        {/* Product Info */}
-                                        <div className="p-4">
+                                        {/* Product Info - flex-grow pushes button to bottom */}
+                                        <div className="p-4 flex flex-col flex-grow">
                                             <h3 className="font-semibold text-base line-clamp-2 mb-2 min-h-[3rem]">
                                                 {product.title}
                                             </h3>
@@ -194,12 +194,12 @@ function MoreCollections() {
                                                 </p>
                                             )}
 
-                                            {/* Buy Button */}
+                                            {/* Buy Button - mt-auto pushes to bottom */}
                                             <a
                                                 href={product.affiliateUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="block w-full bg-[#1d3d53] hover:bg-[#162f40] text-gray-300 text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg"
+                                                className="block w-full bg-[#1d3d53] hover:bg-[#162f40] text-gray-300 text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg mt-auto"
                                             >
                                                 {product.productType === 'Collection' ? 'View Collection' : 'View Product'}
                                             </a>
