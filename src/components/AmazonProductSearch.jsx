@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { getAuth } from 'firebase/auth';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 function AmazonProductSearch({ onProductSelect }) {
     const [keywords, setKeywords] = useState('');
@@ -8,25 +9,17 @@ function AmazonProductSearch({ onProductSelect }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const auth = getAuth();
-
     const handleSearch = async (e) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
         try {
-            const user = auth.currentUser;
-            if (!user) {
-                throw new Error('User not authenticated');
-            }
-            const token = await user.getIdToken();
-
-            const res = await fetch('https://searchamazonproducts-fpqz4j4kvq-uc.a.run.app', {
+            // Call Python backend for Amazon search
+            const res = await fetch(`${API_URL}/api/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({ keywords, category }),
             });
@@ -52,7 +45,9 @@ function AmazonProductSearch({ onProductSelect }) {
                 description: product.description,
                 affiliateUrl: product.detailPageURL,
                 imageUrl: product.imageUrl,
-                price: product.price
+                price: product.price,
+                platform: 'Amazon',
+                productType: 'Single Product'
             });
         }
     };
@@ -95,7 +90,7 @@ function AmazonProductSearch({ onProductSelect }) {
                 </div>
                 <button
                     type="submit"
-                    className={`w-full py-2 px-4 rounded-md text-white font-medium ${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+                    className={`w-full py-2 px-4 rounded-md text-gray-300 font-medium ${isLoading ? 'bg-[#1d3d53] opacity-70' : 'bg-[#1d3d53] hover:bg-[#162f40]'
                         }`}
                     disabled={isLoading}
                 >
@@ -128,7 +123,7 @@ function AmazonProductSearch({ onProductSelect }) {
                                     )}
                                 </div>
                                 <button
-                                    className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 self-start"
+                                    className="px-3 py-1 text-xs bg-[#1d3d53] text-gray-300 rounded hover:bg-[#162f40] self-start"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleSelectProduct(product);

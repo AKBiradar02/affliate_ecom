@@ -36,7 +36,7 @@ function ProductCard({ product }) {
 
       <button
         onClick={() => redirectToAffiliate(product.affiliateUrl)}
-        className="mt-auto w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
+        className="mt-auto w-full bg-[#1d3d53] hover:bg-[#162f40] text-gray-300 py-2 px-4 rounded-md text-sm font-medium transition-colors"
       >
         Buy Now
       </button>

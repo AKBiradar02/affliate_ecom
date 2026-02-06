@@ -1,27 +1,30 @@
-import { useState } from 'react';
-import { getAuth } from 'firebase/auth';
+import { useState, useEffect } from 'react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 
 function AddProductForm({ onSuccess, initialData }) {
-  const [title, setTitle] = useState(initialData?.title || '');
-  const [description, setDescription] = useState(initialData?.description || '');
-  const [affiliateUrl, setAffiliateUrl] = useState(initialData?.affiliateUrl || '');
-  const [category, setCategory] = useState(initialData?.category || '');
-  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
-  const [price, setPrice] = useState(initialData?.price || '');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [affiliateUrl, setAffiliateUrl] = useState('');
+  const [category, setCategory] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [price, setPrice] = useState('');
+  const [platform, setPlatform] = useState('Other');
+  const [productType, setProductType] = useState('Single Product');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const auth = getAuth();
-
   // Update form when initialData changes (from Amazon search)
-  useState(() => {
+  useEffect(() => {
     if (initialData) {
       setTitle(initialData.title || '');
       setDescription(initialData.description || '');
       setAffiliateUrl(initialData.affiliateUrl || '');
       setImageUrl(initialData.imageUrl || '');
       setPrice(initialData.price || '');
+      setPlatform(initialData.platform || 'Other');
+      setProductType(initialData.productType || 'Single Product');
     }
   }, [initialData]);
 
@@ -35,57 +38,37 @@ function AddProductForm({ onSuccess, initialData }) {
       return;
     }
 
-    if (!affiliateUrl.includes('amazon.com') && !affiliateUrl.includes('amzn.to')) {
-      setError('❌ Please enter a valid Amazon affiliate link');
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      const user = auth.currentUser;
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
-      const token = await user.getIdToken();
-
-      const res = await fetch('https://addproduct-fpqz4j4kvq-uc.a.run.app', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: title.trim(),
-          description: description.trim(),
-          affiliateUrl: affiliateUrl.trim(),
-          category,
-          imageUrl: imageUrl.trim(),
-          price: price.trim(),
-        }),
+      // Add product directly to Firestore
+      await addDoc(collection(db, 'products'), {
+        title: title.trim(),
+        description: description.trim(),
+        affiliateUrl: affiliateUrl.trim(),
+        category,
+        imageUrl: imageUrl.trim(),
+        price: price.trim(),
+        platform,
+        productType,
+        createdAt: serverTimestamp(),
       });
 
-      const isJson = res.headers.get('content-type')?.includes('application/json');
-
-      if (!res.ok) {
-        const errorMessage = isJson ? (await res.json()).message : await res.text();
-        throw new Error(errorMessage || 'Failed to add product');
-      }
-
-      const data = isJson ? await res.json() : {};
-
+      // Clear form
       setTitle('');
       setDescription('');
       setAffiliateUrl('');
       setCategory('');
       setImageUrl('');
       setPrice('');
+      setPlatform('Other');
+      setProductType('Single Product');
       setSuccess('✅ Product has been added successfully');
 
-      if (onSuccess) onSuccess(data);
+      if (onSuccess) onSuccess();
     } catch (err) {
       console.error('Add Product Error:', err);
-      setError(`❌ ${err.message || 'Failed to add product. Check authentication or function setup.'}`);
+      setError(`❌ ${err.message || 'Failed to add product. Please try again.'}`);
     } finally {
       setIsLoading(false);
     }
@@ -93,9 +76,9 @@ function AddProductForm({ onSuccess, initialData }) {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Add New Amazon Product</h2>
+      <h2 className="text-xl font-semibold mb-4">Add New Product</h2>
       <p className="text-gray-600 mb-6">
-        Add your Amazon affiliate products to showcase on your site
+        Add products from Earnkaro, Myntra, Glamm, Clann, Wishlink, or other platforms
       </p>
 
       {error && <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4">{error}</div>}
@@ -166,7 +149,38 @@ function AddProductForm({ onSuccess, initialData }) {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Amazon Affiliate Link *</label>
+            <label className="block mb-1 font-medium">Platform *</label>
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              required
+            >
+              <option value="Earnkaro">Earnkaro</option>
+              <option value="Myntra">Myntra</option>
+              <option value="Wishlink">Wishlink</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Product Type *</label>
+            <select
+              value={productType}
+              onChange={(e) => setProductType(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              required
+            >
+              <option value="Single Product">Single Product</option>
+              <option value="Collection">Collection</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Collection = Multiple products in one link (e.g., Myntra store)
+            </p>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Affiliate Link *</label>
             <input
               type="text"
               value={affiliateUrl}
@@ -178,7 +192,7 @@ function AddProductForm({ onSuccess, initialData }) {
 
           <button
             type="submit"
-            className={`w-full py-2 px-4 rounded-md text-white font-medium ${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+            className={`w-full py-2 px-4 rounded-md text-gray-300 font-medium ${isLoading ? 'bg-[#1d3d53] opacity-70' : 'bg-[#1d3d53] hover:bg-[#162f40]'
               }`}
             disabled={isLoading}
           >

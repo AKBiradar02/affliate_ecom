@@ -1,5 +1,0 @@
-# This project uses Node.js and npm for dependencies.
-# For deployment, ensure Node.js (v18+) and npm are available.
-
-# To install dependencies, run:
-# npm install 

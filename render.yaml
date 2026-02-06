@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: affilistore-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: AMAZON_ACCESS_KEY
+        sync: false
+      - key: AMAZON_SECRET_KEY
+        sync: false
+      - key: AMAZON_PARTNER_TAG
+        sync: false
+      - key: AMAZON_REGION
+        value: IN
+      - key: FRONTEND_URL
+        sync: false

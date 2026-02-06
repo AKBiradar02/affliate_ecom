@@ -5,10 +5,10 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-600 py-3 px-4 shadow-md sticky top-0 z-10">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <nav className="bg-white py-3 px-4 shadow-md sticky top-0 z-50 w-full">
+      <div className="w-full px-4 md:px-8 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link to="/" className="text-2xl font-bold text-white tracking-wide">
+          <Link to="/" className="text-2xl font-bold text-gray-800 tracking-wide">
             AffiliStore
           </Link>
         </div>
@@ -24,16 +24,18 @@ function Navbar() {
         </button>
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-6 items-center">
-          <Link to="/" className="text-white hover:text-blue-100 transition-colors">Home</Link>
-          <Link to="/products" className="text-white hover:text-blue-100 transition-colors">Products</Link>
-          <Link to="/blog" className="text-white hover:text-blue-100 transition-colors">Blog</Link>
+          <Link to="/" className="text-gray-800 hover:text-blue-100 transition-colors">Home</Link>
+          <Link to="/deals" className="text-gray-800 hover:text-blue-100 transition-colors">Deals</Link>
+          <Link to="/collections" className="text-gray-800 hover:text-blue-100 transition-colors">More Collections</Link>
+          <Link to="/blog" className="text-gray-800 hover:text-blue-100 transition-colors">Blog</Link>
         </div>
       </div>
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden mt-2 bg-blue-600 rounded shadow-lg flex flex-col gap-2 px-4 py-3 animate-fade-in">
+        <div className="md:hidden mt-2 bg-gray-800 rounded shadow-lg flex flex-col gap-2 px-4 py-3 animate-fade-in">
           <Link to="/" className="text-white py-1" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/products" className="text-white py-1" onClick={() => setMenuOpen(false)}>Products</Link>
+          <Link to="/deals" className="text-white py-1" onClick={() => setMenuOpen(false)}>Deals</Link>
+          <Link to="/collections" className="text-white py-1" onClick={() => setMenuOpen(false)}>More Collections</Link>
           <Link to="/blog" className="text-white py-1" onClick={() => setMenuOpen(false)}>Blog</Link>
         </div>
       )}

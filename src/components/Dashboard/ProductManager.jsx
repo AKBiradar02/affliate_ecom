@@ -51,7 +51,7 @@ function ProductManager() {
   if (isLoading) {
     return (
       <div className="flex justify-center py-10">
-        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#1d3d53] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -60,7 +60,7 @@ function ProductManager() {
     <div className="overflow-x-auto">
       <div className="flex justify-end mb-4">
         <button
-          className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          className="px-3 py-1 text-sm bg-[#1d3d53] text-gray-300 rounded hover:bg-[#162f40] transition-colors"
           onClick={() => loadProducts()}
         >
           Refresh
@@ -104,7 +104,7 @@ function ProductManager() {
                     href={product.affiliateUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 flex items-center"
+                    className="text-[#1d3d53] hover:text-[#162f40] flex items-center"
                   >
                     {product.affiliateUrl.substring(0, 30)}...
                     <FaExternalLinkAlt className="ml-1 h-3 w-3" />

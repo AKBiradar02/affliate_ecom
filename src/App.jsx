@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Blog from './pages/Blog';
 import Dashboard from './pages/Dashboard';
 import ProductsPage from './pages/ProductsPage';
+import DealsPage from './pages/DealsPage';
+import MoreCollections from './pages/MoreCollections';
 import './App.css';
 
 function App() {
@@ -25,7 +27,7 @@ function App() {
     return (
       <div className="p-5 text-red-600">
         <h1 className="text-2xl font-bold mb-4">Error occurred:</h1>
-        <pre className="bg-gray-100 p-4 rounded">{error}</pre>
+        <pre className="bg-[#FFC0C5] p-4 rounded">{error}</pre>
       </div>
     );
   }
@@ -38,7 +40,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/deals" element={<DealsPage />} />
+            <Route path="/collections" element={<MoreCollections />} />
             <Route path="/blog" element={<Blog />} />
           </Routes>
         </main>
