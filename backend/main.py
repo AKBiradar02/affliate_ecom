@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import os
 from dotenv import load_dotenv
-from amazon_paapi import AmazonApi
+from amazon_creatorsapi import AmazonApi
 import logging
 
 # Pydantic models
@@ -82,15 +82,7 @@ def fetch_deals_from_amazon(category: str, max_items: int = 10) -> List[Dict]:
         items = amazon_api.search_items(
             keywords=search_terms,
             search_index=CATEGORIES.get(category, "All"),
-            item_count=max_items,
-            resources=[
-                "Images.Primary.Large",
-                "ItemInfo.Title",
-                "ItemInfo.Features",
-                "Offers.Listings.Price",
-                "Offers.Listings.SavingBasis",
-                "ItemInfo.ProductInfo"
-            ]
+            item_count=max_items
         )
         
         deals = []
@@ -244,13 +236,7 @@ async def search_products(request: SearchRequest):
         items = amazon_api.search_items(
             keywords=request.keywords,
             search_index=search_index,
-            item_count=10,
-            resources=[
-                "Images.Primary.Large",
-                "ItemInfo.Title",
-                "ItemInfo.Features",
-                "Offers.Listings.Price",
-            ]
+            item_count=10
         )
         
         products = []
