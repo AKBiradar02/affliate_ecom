@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import os
 from dotenv import load_dotenv
-from amazon_creatorsapi import AmazonApi
+from amazon_creatorsapi import AmazonCreatorsApi
 import logging
 
 # Pydantic models
@@ -41,7 +41,7 @@ AMAZON_PARTNER_TAG = os.getenv("AMAZON_PARTNER_TAG")
 AMAZON_REGION = os.getenv("AMAZON_REGION", "IN")
 
 # Initialize Amazon API
-amazon_api = AmazonApi(
+amazon_api = AmazonCreatorsApi(
     key=AMAZON_ACCESS_KEY,
     secret=AMAZON_SECRET_KEY,
     tag=AMAZON_PARTNER_TAG,
