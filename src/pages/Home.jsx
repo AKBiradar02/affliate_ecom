@@ -107,7 +107,7 @@ function Home() {
                         <div className="relative h-40 bg-gray-100 flex items-center justify-center p-4">
                           <img
                             src={deal.imageUrl}
-                            alt={deal.productName}
+                            alt={deal.title}
                             className="max-h-full max-w-full object-contain"
                           />
                         </div>
@@ -116,7 +116,7 @@ function Home() {
                       {/* Product Info */}
                       <div className="p-4">
                         <h3 className="font-semibold text-sm line-clamp-2 mb-2 h-10">
-                          {deal.productName}
+                          {deal.title}
                         </h3>
 
                         {/* Platform Badge */}
@@ -128,7 +128,7 @@ function Home() {
 
                         {/* Buy Button */}
                         <a
-                          href={deal.affiliateLink}
+                          href={deal.affiliateUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="block w-full bg-[#1d3d53] hover:bg-[#955e3e] text-white text-center py-2 rounded-lg font-medium transition-colors text-sm"
