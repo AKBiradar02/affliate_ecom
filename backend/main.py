@@ -223,6 +223,78 @@ async def get_categories():
     }
 
 
+@app.post("/api/search")
+async def search_products(request: dict):
+    """Search Amazon products by keywords"""
+    try:
+        keywords = request.get("keywords", "")
+        category = request.get("category", "All")
+        
+        if not keywords:
+            raise HTTPException(status_code=400, detail="Keywords are required")
+        
+        logger.info(f"Searching for: {keywords} in category: {category}")
+        
+        # Map category to search index
+        search_index = CATEGORIES.get(category, "All")
+        
+        items = amazon_api.search_items(
+            keywords=keywords,
+            search_index=search_index,
+            item_count=10,
+            resources=[
+                "Images.Primary.Large",
+                "ItemInfo.Title",
+                "ItemInfo.Features",
+                "Offers.Listings.Price",
+            ]
+        )
+        
+        products = []
+        if items and hasattr(items, 'items'):
+            for item in items.items:
+                try:
+                    title = item.item_info.title.display_value if item.item_info and item.item_info.title else "No title"
+                    
+                    # Get image
+                    image_url = None
+                    if item.images and item.images.primary and item.images.primary.large:
+                        image_url = item.images.primary.large.url
+                    
+                    # Get price
+                    price = None
+                    if item.offers and item.offers.listings:
+                        listing = item.offers.listings[0]
+                        if listing.price and listing.price.display_amount:
+                            price = listing.price.display_amount
+                    
+                    # Get description from features
+                    description = ""
+                    if item.item_info and item.item_info.features:
+                        description = " ".join(item.item_info.features.display_values[:2])
+                    
+                    products.append({
+                        "title": title,
+                        "description": description,
+                        "imageUrl": image_url,
+                        "price": price,
+                        "detailPageURL": item.detail_page_url if hasattr(item, 'detail_page_url') else ""
+                    })
+                except Exception as e:
+                    logger.error(f"Error processing item: {str(e)}")
+                    continue
+        
+        return {
+            "products": products,
+            "total": len(products)
+        }
+    
+    except Exception as e:
+        logger.error(f"Search error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 @app.post("/api/refresh-cache")
 async def refresh_cache():
     """Manually refresh all deals cache"""
