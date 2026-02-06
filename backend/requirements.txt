@@ -4,3 +4,4 @@ python-dotenv==1.0.1
 python-amazon-paapi==6.0.0
 requests==2.32.3
 pydantic==2.10.3
+beautifulsoup4==4.12.3
