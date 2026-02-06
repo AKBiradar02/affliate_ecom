@@ -27,8 +27,8 @@ function Home() {
       }
 
       const data = await response.json();
-      // Show only first 6 Amazon deals on homepage
-      setAmazonDeals(data.deals?.slice(0, 6) || []);
+      // Show only first 3 Amazon deals on homepage
+      setAmazonDeals(data.deals?.slice(0, 3) || []);
     } catch (err) {
       console.error('Error fetching Amazon deals:', err);
       setError('Unable to load Amazon deals.');
@@ -41,8 +41,8 @@ function Home() {
     setIsLoadingManual(true);
     try {
       const links = await getAffiliateLinks();
-      // Show only first 6 manual deals on homepage
-      setManualDeals(links.slice(0, 6));
+      // Show only first 3 manual deals on homepage
+      setManualDeals(links.slice(0, 3));
     } catch (err) {
       console.error('Error fetching manual deals:', err);
     } finally {
