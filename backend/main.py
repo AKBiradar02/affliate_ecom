@@ -34,18 +34,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Amazon PA-API Configuration
-AMAZON_ACCESS_KEY = os.getenv("AMAZON_ACCESS_KEY")
-AMAZON_SECRET_KEY = os.getenv("AMAZON_SECRET_KEY")
+# Amazon Creators API Configuration
+AMAZON_CREDENTIAL_ID = os.getenv("AMAZON_CREDENTIAL_ID")
+AMAZON_CREDENTIAL_SECRET = os.getenv("AMAZON_CREDENTIAL_SECRET")
+AMAZON_API_VERSION = os.getenv("AMAZON_API_VERSION", "v2.2")
+AMAZON_MARKETPLACE = os.getenv("AMAZON_MARKETPLACE", "www.amazon.in")
 AMAZON_PARTNER_TAG = os.getenv("AMAZON_PARTNER_TAG")
-AMAZON_REGION = os.getenv("AMAZON_REGION", "IN")
 
-# Initialize Amazon API
+# Initialize Amazon Creators API
 amazon_api = AmazonCreatorsApi(
-    key=AMAZON_ACCESS_KEY,
-    secret=AMAZON_SECRET_KEY,
-    tag=AMAZON_PARTNER_TAG,
-    country=AMAZON_REGION
+    credential_id=AMAZON_CREDENTIAL_ID,
+    credential_secret=AMAZON_CREDENTIAL_SECRET,
+    version=AMAZON_API_VERSION,
+    marketplace=AMAZON_MARKETPLACE
 )
 
 # Categories mapping
