@@ -1,11 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import os
 from dotenv import load_dotenv
 from amazon_paapi import AmazonApi
 import logging
+
+# Pydantic models
+class SearchRequest(BaseModel):
+    keywords: str
+    category: str = "All"
 
 # Load environment variables
 load_dotenv()
@@ -224,22 +230,19 @@ async def get_categories():
 
 
 @app.post("/api/search")
-async def search_products(request: dict):
+async def search_products(request: SearchRequest):
     """Search Amazon products by keywords"""
     try:
-        keywords = request.get("keywords", "")
-        category = request.get("category", "All")
-        
-        if not keywords:
+        if not request.keywords:
             raise HTTPException(status_code=400, detail="Keywords are required")
         
-        logger.info(f"Searching for: {keywords} in category: {category}")
+        logger.info(f"Searching for: {request.keywords} in category: {request.category}")
         
         # Map category to search index
-        search_index = CATEGORIES.get(category, "All")
+        search_index = CATEGORIES.get(request.category, "All")
         
         items = amazon_api.search_items(
-            keywords=keywords,
+            keywords=request.keywords,
             search_index=search_index,
             item_count=10,
             resources=[
@@ -292,6 +295,7 @@ async def search_products(request: dict):
     except Exception as e:
         logger.error(f"Search error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
