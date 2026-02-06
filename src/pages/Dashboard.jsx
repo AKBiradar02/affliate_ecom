@@ -5,6 +5,7 @@ import ProductManager from '../components/Dashboard/ProductManager';
 import AddProductForm from '../components/AddProductForm';
 import AddBlogForm from '../components/Dashboard/AddBlogForm';
 import AmazonProductSearch from '../components/AmazonProductSearch';
+import SmartImport from '../components/Dashboard/SmartImport';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
 
 function Dashboard() {
@@ -129,6 +130,15 @@ function Dashboard() {
               Amazon Search
             </button>
             <button
+              className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'smart'
+                ? 'border-[#1d3d53] text-[#1d3d53]'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              onClick={() => setActiveTab('smart')}
+            >
+              🚀 Smart Import
+            </button>
+            <button
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'add'
                 ? 'border-[#1d3d53] text-[#1d3d53]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -159,6 +169,9 @@ function Dashboard() {
           )}
           {activeTab === 'search' && (
             <AmazonProductSearch onProductSelect={handleAmazonProductSelect} />
+          )}
+          {activeTab === 'smart' && (
+            <SmartImport onSuccess={handleProductAdded} />
           )}
           {activeTab === 'add' && (
             <AddProductForm

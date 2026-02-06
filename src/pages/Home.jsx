@@ -119,11 +119,16 @@ function Home() {
                           {deal.title}
                         </h3>
 
-                        {/* Platform Badge */}
-                        <div className="mb-2">
+                        {/* Platform & Category Badges */}
+                        <div className="mb-2 flex gap-2 flex-wrap">
                           <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                             {deal.platform}
                           </span>
+                          {deal.category && (
+                            <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                              {deal.category}
+                            </span>
+                          )}
                         </div>
 
                         {/* Buy Button */}

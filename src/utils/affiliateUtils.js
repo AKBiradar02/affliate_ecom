@@ -1,4 +1,4 @@
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase.js"; // Fixed import
 
 export const getAffiliateLinks = async () => {
@@ -28,17 +28,11 @@ export const addAffiliateLink = async (productData) => {
 };
 
 export const deleteAffiliateLink = async (id) => {
-  const password = localStorage.getItem("adminPassword");
-
-  const res = await fetch(`${API_BASE}/deleteProduct`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id, password }),
-  });
-
-  if (!res.ok) {
+  // Use Firestore directly instead of Cloud Functions
+  try {
+    await deleteDoc(doc(db, "products", id));
+  } catch (error) {
+    console.error("Delete error:", error);
     throw new Error("Failed to delete product");
   }
 };

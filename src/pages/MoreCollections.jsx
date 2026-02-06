@@ -182,11 +182,6 @@ function MoreCollections() {
                                                 </span>
                                             )}
 
-                                            {/* Price */}
-                                            {product.price && (
-                                                <p className="text-2xl font-bold text-green-600 mb-3">{product.price}</p>
-                                            )}
-
                                             {/* Description */}
                                             {product.description && (
                                                 <p className="text-gray-600 text-sm mb-4 line-clamp-2">

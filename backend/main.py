@@ -7,11 +7,15 @@ import os
 from dotenv import load_dotenv
 from amazon_creatorsapi import AmazonCreatorsApi
 import logging
+from services.earnkaro_converter import EarnkaroConverter
 
 # Pydantic models
 class SearchRequest(BaseModel):
     keywords: str
     category: str = "All"
+
+class EarnkaroConvertRequest(BaseModel):
+    url: str
 
 # Load environment variables
 load_dotenv()
@@ -302,6 +306,57 @@ async def refresh_cache():
         "message": "Cache refreshed for all categories",
         "timestamp": datetime.now().isoformat()
     }
+
+
+# ============================================
+# EARNKARO SMART IMPORT ENDPOINTS
+# ============================================
+
+@app.post("/api/earnkaro/convert")
+async def convert_earnkaro_url(request: EarnkaroConvertRequest):
+    """
+    Convert product URL to Earnkaro affiliate link and scrape product details
+    Separate from Amazon PA-API - only for Earnkaro (Flipkart, etc.)
+    """
+    try:
+        logger.info(f"Converting URL: {request.url}")
+        
+        # Initialize converter
+        converter = EarnkaroConverter()
+        
+        # Convert URL to affiliate link
+        conversion_result = converter.convert_url(request.url)
+        
+        # Check for errors
+        if conversion_result.get("error"):
+            raise HTTPException(
+                status_code=400,
+                detail=conversion_result.get("message", "Conversion failed")
+            )
+        
+        # Scrape product details from original URL
+        product_details = converter.scrape_product_details(request.url)
+        
+        # Combine results
+        return {
+            "success": True,
+            "affiliateUrl": conversion_result.get("data", ""),
+            "title": product_details.get("title", ""),
+            "imageUrl": product_details.get("imageUrl", ""),
+            "price": product_details.get("price", ""),
+            "description": product_details.get("description", ""),
+            "category": product_details.get("category", ""),
+            "platform": "Earnkaro"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Earnkaro conversion error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to convert URL: {str(e)}"
+        )
 
 
 if __name__ == "__main__":
