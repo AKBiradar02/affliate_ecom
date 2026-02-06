@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
 import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 import ProductsPage from './pages/ProductsPage';
 import DealsPage from './pages/DealsPage';
 import MoreCollections from './pages/MoreCollections';
@@ -33,21 +36,31 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/deals" element={<DealsPage />} />
-            <Route path="/collections" element={<MoreCollections />} />
-            <Route path="/blog" element={<Blog />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/deals" element={<DealsPage />} />
+              <Route path="/collections" element={<MoreCollections />} />
+              <Route path="/blog" element={<Blog />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

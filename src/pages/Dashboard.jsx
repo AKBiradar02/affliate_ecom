@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import ProductManager from '../components/Dashboard/ProductManager';
 import AddProductForm from '../components/AddProductForm';
 import AddBlogForm from '../components/Dashboard/AddBlogForm';
@@ -6,12 +8,23 @@ import AmazonProductSearch from '../components/AmazonProductSearch';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('manage');
   const [error, setError] = useState('');
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAmazonProduct, setSelectedAmazonProduct] = useState(null);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   useEffect(() => {
     loadProducts();
@@ -56,9 +69,22 @@ function Dashboard() {
 
   return (
     <div className="w-full px-4 md:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-gray-600">Manage your affiliate products and content</p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+          <p className="text-gray-600">Manage your affiliate products and content</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-gray-600">
+            Logged in as: <span className="font-medium">{user?.email}</span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Stats Section */}
