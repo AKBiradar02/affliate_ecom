@@ -46,7 +46,8 @@ amazon_api = AmazonCreatorsApi(
     credential_id=AMAZON_CREDENTIAL_ID,
     credential_secret=AMAZON_CREDENTIAL_SECRET,
     version=AMAZON_API_VERSION,
-    marketplace=AMAZON_MARKETPLACE
+    marketplace=AMAZON_MARKETPLACE,
+    tag=AMAZON_PARTNER_TAG
 )
 
 # Categories mapping
