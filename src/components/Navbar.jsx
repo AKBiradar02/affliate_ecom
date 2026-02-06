@@ -14,7 +14,7 @@ function Navbar() {
         </div>
         {/* Hamburger Icon for Mobile */}
         <button
-          className="md:hidden text-white focus:outline-none"
+          className="md:hidden text-gray-800 focus:outline-none"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
