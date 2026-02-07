@@ -28,11 +28,21 @@ app = FastAPI(title="AffiliStore Deals API", version="1.0.0")
 
 # CORS middleware
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
-allowed_origins = [FRONTEND_URL, "http://localhost:5173", "http://localhost:3000"]
+allowed_origins = [
+    FRONTEND_URL, 
+    "http://localhost:5173", 
+    "http://localhost:3000",
+    "https://affliate-ecom.vercel.app",  # Production Vercel URL
+    "https://affliate-ecom-git-main-abhay-biradars-projects.vercel.app",  # Vercel preview URL
+]
+
+# Allow all Vercel preview URLs
+allow_origin_regex = r"https://affliate-ecom.*\.vercel\.app"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=allow_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
