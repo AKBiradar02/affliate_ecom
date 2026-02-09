@@ -34,12 +34,34 @@ function Home() {
           <p className="text-xl mb-8">
             Discover amazing deals curated just for you. Save big on your favorite products!
           </p>
-          <Link
-            to="/deals"
-            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-          >
-            View All Deals →
-          </Link>
+
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              to="/deals"
+              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Deals
+            </Link>
+            <Link
+              to="/collections"
+              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Collections
+            </Link>
+            <Link
+              to="/blog"
+              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Blog
+            </Link>
+            <Link
+              to="/dashboard"
+              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Dashboard
+            </Link>
+          </div>
         </div>
       </section>
 
