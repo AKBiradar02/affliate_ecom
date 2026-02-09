@@ -55,12 +55,6 @@ function Home() {
             >
               Blog
             </Link>
-            <Link
-              to="/dashboard"
-              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Dashboard
-            </Link>
           </div>
         </div>
       </section>
