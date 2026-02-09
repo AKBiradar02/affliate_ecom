@@ -12,7 +12,21 @@ from services.earnkaro_converter import EarnkaroConverter
 # Pydantic models
 class SearchRequest(BaseModel):
     keywords: str
-    category: str = "All"
+    category: Optional[str] = None
+
+
+class AdvancedSearchRequest(BaseModel):
+    """Request model for advanced Amazon search with filters"""
+    keywords: str
+    category: Optional[str] = None
+    min_price: Optional[int] = None  # Price in paise (₹100 = 10000 paise)
+    max_price: Optional[int] = None
+    min_rating: Optional[int] = None  # 1-5 stars
+    brand: Optional[str] = None
+    prime_only: Optional[bool] = False
+    sort_by: Optional[str] = None  # Relevance, Price:LowToHigh, etc.
+    page: Optional[int] = 1
+    items_per_page: Optional[int] = 10
 
 class EarnkaroConvertRequest(BaseModel):
     url: str
@@ -77,7 +91,12 @@ CATEGORIES = {
 # In-memory cache
 deals_cache: Dict[str, Dict] = {}
 cache_timestamp: Dict[str, datetime] = {}
-CACHE_DURATION = timedelta(hours=int(os.getenv("CACHE_DURATION_HOURS", "1")))
+CACHE_DURATION = timedelta(hours=24)  # Amazon license allows 24-hour caching
+
+# Amazon search cache (24-hour limit per license)
+search_cache: Dict[str, Dict] = {}
+search_cache_timestamp: Dict[str, datetime] = {}
+SEARCH_CACHE_DURATION = timedelta(hours=24)
 
 
 def is_cache_valid(category: str) -> bool:
@@ -85,6 +104,13 @@ def is_cache_valid(category: str) -> bool:
     if category not in cache_timestamp:
         return False
     return datetime.now() - cache_timestamp[category] < CACHE_DURATION
+
+
+def is_search_cache_valid(cache_key: str) -> bool:
+    """Check if search cache is still valid (24-hour limit per Amazon license)"""
+    if cache_key not in search_cache_timestamp:
+        return False
+    return datetime.now() - search_cache_timestamp[cache_key] < SEARCH_CACHE_DURATION
 
 
 def fetch_deals_from_amazon(category: str, max_items: int = 10) -> List[Dict]:
@@ -298,6 +324,167 @@ async def search_products(request: SearchRequest):
         logger.error(f"Search error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.post("/api/amazon/search-advanced")
+async def search_amazon_advanced(request: AdvancedSearchRequest):
+    """
+    Advanced Amazon product search with filters, sorting, and pagination
+    
+    Features:
+    - Price range filtering (min_price, max_price)
+    - Rating filtering (min_rating)
+    - Brand filtering
+    - Prime-only products
+    - Sort options (price, reviews, newest)
+    - Pagination (up to 100 results)
+    - 24-hour caching per Amazon license
+    """
+    try:
+        if not request.keywords:
+            raise HTTPException(status_code=400, detail="Keywords are required")
+        
+        # Generate cache key from search parameters
+        cache_key = f"{request.keywords}_{request.category}_{request.min_price}_{request.max_price}_{request.min_rating}_{request.brand}_{request.prime_only}_{request.sort_by}_{request.page}"
+        
+        # Check cache first (24-hour limit per Amazon license)
+        if is_search_cache_valid(cache_key):
+            logger.info(f"Returning cached results for: {cache_key}")
+            cached_data = search_cache[cache_key]
+            cached_data["cached"] = True
+            cached_data["cached_at"] = search_cache_timestamp[cache_key].isoformat()
+            return cached_data
+        
+        logger.info(f"Advanced search: {request.keywords}, filters: price={request.min_price}-{request.max_price}, rating={request.min_rating}, brand={request.brand}")
+        
+        # Build search parameters
+        search_params = {
+            "keywords": request.keywords,
+            "item_count": min(request.items_per_page, 10),  # Max 10 per page
+            "item_page": min(request.page, 10),  # Max 10 pages
+        }
+        
+        # Add category/search index
+        if request.category:
+            search_params["search_index"] = CATEGORIES.get(request.category, "All")
+        
+        # Add price filters
+        if request.min_price:
+            search_params["min_price"] = request.min_price
+        if request.max_price:
+            search_params["max_price"] = request.max_price
+        
+        # Add rating filter
+        if request.min_rating:
+            search_params["min_reviews_rating"] = request.min_rating
+        
+        # Add brand filter
+        if request.brand:
+            search_params["brand"] = request.brand
+        
+        # Add delivery flags for Prime
+        if request.prime_only:
+            search_params["delivery_flags"] = ["Prime"]
+        
+        # Add sort option
+        if request.sort_by and request.sort_by != "Relevance":
+            search_params["sort_by"] = request.sort_by
+        
+        logger.info(f"Amazon API params: {search_params}")
+        
+        # Call Amazon API
+        items = amazon_api.search_items(**search_params)
+        
+        products = []
+        total_results = 0
+        
+        if items:
+            # Get total result count
+            if hasattr(items, 'search_result') and hasattr(items.search_result, 'total_result_count'):
+                total_results = items.search_result.total_result_count
+            
+            # Process items
+            if hasattr(items, 'items'):
+                for item in items.items:
+                    try:
+                        # Title
+                        title = item.item_info.title.display_value if item.item_info and item.item_info.title else "No title"
+                        
+                        # Image
+                        image_url = None
+                        if item.images and item.images.primary:
+                            if item.images.primary.large:
+                                image_url = item.images.primary.large.url
+                            elif item.images.primary.medium:
+                                image_url = item.images.primary.medium.url
+                        
+                        # Price and savings
+                        price = None
+                        original_price = None
+                        savings_percent = None
+                        is_prime = False
+                        
+                        if item.offers and item.offers.listings:
+                            listing = item.offers.listings[0]
+                            
+                            # Current price
+                            if listing.price and listing.price.display_amount:
+                                price = listing.price.display_amount
+                            
+                            # Original price and savings
+                            if listing.price and listing.price.savings:
+                                if hasattr(listing.price.savings, 'display_amount'):
+                                    original_price = listing.price.savings.display_amount
+                                if hasattr(listing.price.savings, 'percentage'):
+                                    savings_percent = listing.price.savings.percentage
+                            
+                            # Prime eligibility
+                            if hasattr(listing, 'delivery_info') and listing.delivery_info:
+                                is_prime = getattr(listing.delivery_info, 'is_prime_eligible', False)
+                        
+                        # Description from features
+                        description = ""
+                        if item.item_info and item.item_info.features:
+                            description = " ".join(item.item_info.features.display_values[:2])
+                        
+                        products.append({
+                            "asin": item.asin,
+                            "title": title,
+                            "description": description,
+                            "imageUrl": image_url,
+                            "price": price,
+                            "originalPrice": original_price,
+                            "savingsPercent": savings_percent,
+                            "isPrime": is_prime,
+                            "detailPageURL": item.detail_page_url if hasattr(item, 'detail_page_url') else ""
+                        })
+                    except Exception as e:
+                        logger.error(f"Error processing item: {str(e)}")
+                        continue
+        
+        # Prepare response with timestamp (required by Amazon license)
+        current_time = datetime.now()
+        response_data = {
+            "products": products,
+            "total": len(products),
+            "totalResults": total_results,
+            "currentPage": request.page,
+            "itemsPerPage": request.items_per_page,
+            "hasMore": (request.page * request.items_per_page) < total_results,
+            "cached": False,
+            "timestamp": current_time.isoformat(),
+            "cached_at": None
+        }
+        
+        # Store in cache (24-hour limit per Amazon license)
+        search_cache[cache_key] = response_data
+        search_cache_timestamp[cache_key] = current_time
+        logger.info(f"Cached search results for: {cache_key}")
+        
+        return response_data
+    
+    except Exception as e:
+        logger.error(f"Advanced search error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
