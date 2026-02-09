@@ -3,12 +3,10 @@ import { getAffiliateLinks } from '../utils/affiliateUtils';
 
 function MoreCollections() {
     const [products, setProducts] = useState([]);
-    const [selectedPlatform, setSelectedPlatform] = useState('All');
     const [selectedType, setSelectedType] = useState('All');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const platforms = ['All', 'Earnkaro', 'Myntra', 'Wishlink', 'Other'];
     const types = ['All', 'Single Product', 'Collection'];
 
     useEffect(() => {
@@ -30,11 +28,10 @@ function MoreCollections() {
         }
     };
 
-    // Filter products based on selected platform and type
+    // Filter products based on selected type
     const filteredProducts = products.filter(product => {
-        const platformMatch = selectedPlatform === 'All' || product.platform === selectedPlatform;
         const typeMatch = selectedType === 'All' || product.productType === selectedType;
-        return platformMatch && typeMatch;
+        return typeMatch;
     });
 
     return (
@@ -43,7 +40,7 @@ function MoreCollections() {
                 {/* Header */}
                 <div className="mb-8 bg-[#D68E9A] rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-200  text-center">
                     <h1 className="text-4xl text-gray-800 font-bold mb-2">🛍️ More Collections</h1>
-                    <p className="text-gray-800">Curated products from multiple platforms</p>
+                    <p className="text-gray-800">Curated products and collections</p>
                 </div>
 
                 {/* Filters */}
@@ -58,32 +55,7 @@ function MoreCollections() {
                         </span>
                     </div>
 
-                    <div className="p-6 grid md:grid-cols-2 gap-8 relative">
-                        {/* Platform Filter */}
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider flex items-center gap-2">
-                                <span className="w-1 h-4 bg-indigo-500 rounded-full"></span>
-                                Platform
-                            </label>
-                            <div className="flex flex-wrap gap-3">
-                                {platforms.map((platform) => (
-                                    <button
-                                        key={platform}
-                                        onClick={() => setSelectedPlatform(platform)}
-                                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 border ${selectedPlatform === platform
-                                            ? 'bg-[#1d3d53] text-gray-300 border-[#1d3d53] shadow-md transform scale-105'
-                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm'
-                                            }`}
-                                    >
-                                        {platform}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Divider for mobile/desktop */}
-                        <div className="hidden md:block absolute left-1/2 top-6 bottom-6 w-px bg-gray-200"></div>
-
+                    <div className="p-6">
                         {/* Type Filter */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider flex items-center gap-2">
