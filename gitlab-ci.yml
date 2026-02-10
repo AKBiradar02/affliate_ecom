@@ -1,0 +1,61 @@
+# GitLab CI/CD Pipeline Configuration
+# This file defines automated checks that run on every push
+# Define the stages (order matters)
+
+
+# GitLab CI/CD Pipeline Configuration
+# This file defines automated checks that run on every push
+
+# Define the stages (order matters)
+stages:
+  - lint
+  - build
+
+# ==========================================
+# FRONTEND CHECKS
+# ==========================================
+
+# Job 1: Check Frontend Code Quality
+frontend-lint:
+  stage: lint
+  image: node:18
+  script:
+    - echo "Checking frontend code quality..."
+    - npm install
+    - npm run lint
+  only:
+    - main
+  allow_failure: true
+
+# Job 2: Build Frontend (Most Important!)
+frontend-build:
+  stage: build
+  image: node:18
+  script:
+    - echo "Building frontend..."
+    - npm install
+    - npm run build
+    - echo "Frontend build successful!"
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  only:
+    - main
+
+# ==========================================
+# BACKEND CHECKS
+# ==========================================
+
+# Job 3: Check Backend Python Syntax
+backend-syntax-check:
+  stage: lint
+  image: python:3.11
+  script:
+    - echo "Checking backend Python syntax..."
+    - cd backend
+    - pip install -r requirements.txt
+    - python -m py_compile main.py
+    - echo "Backend syntax check passed!"
+  only:
+    - main
