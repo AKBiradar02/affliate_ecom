@@ -201,32 +201,77 @@ async def root():
 
 
 @app.get("/api/deals")
-async def get_all_deals(refresh: bool = False):
-    """Get deals from all categories"""
-    all_deals = []
-    
-    for category in CATEGORIES.keys():
-        # Check cache
-        if not refresh and is_cache_valid(category):
-            logger.info(f"Using cached deals for {category}")
-            all_deals.extend(deals_cache[category])
-        else:
-            # Fetch fresh deals
-            logger.info(f"Fetching fresh deals for {category}")
-            deals = fetch_deals_from_amazon(category)
-            deals_cache[category] = deals
-            cache_timestamp[category] = datetime.now()
-            all_deals.extend(deals)
-    
-    return {
-        "total": len(all_deals),
-        "deals": all_deals,
-        "cached_at": {cat: ts.isoformat() for cat, ts in cache_timestamp.items()},
-        "cache_valid_until": {
-            cat: (ts + CACHE_DURATION).isoformat() 
-            for cat, ts in cache_timestamp.items()
-        }
-    }
+async def get_deals():
+    """
+    Get Amazon deals
+    Returns deals if API is working, otherwise returns empty array
+    Frontend will show 'Coming Soon' if no deals returned
+    """
+    try:
+        logger.info("Fetching Amazon deals...")
+        
+        # Try to fetch deals from Amazon API
+        # Using BestSellers or Deals category
+        items = amazon_api.search_items(
+            keywords="deals",
+            search_index="All",
+            item_count=20,
+            sort_by="Relevance"
+        )
+        
+        deals = []
+        
+        if items and hasattr(items, 'items'):
+            for item in items.items:
+                try:
+                    # Extract product details
+                    title = item.item_info.title.display_value if item.item_info and item.item_info.title else "No title"
+                    
+                    # Image
+                    image_url = None
+                    if item.images and item.images.primary:
+                        if item.images.primary.large:
+                            image_url = item.images.primary.large.url
+                        elif item.images.primary.medium:
+                            image_url = item.images.primary.medium.url
+                    
+                    # Price and savings
+                    price = None
+                    original_price = None
+                    discount_percent = 0
+                    
+                    if item.offers and item.offers.listings:
+                        listing = item.offers.listings[0]
+                        if listing.price:
+                            price = f"₹{listing.price.amount}"
+                        
+                        if listing.saving_basis:
+                            original_price = f"₹{listing.saving_basis.amount}"
+                            if listing.price and listing.saving_basis:
+                                savings = listing.saving_basis.amount - listing.price.amount
+                                discount_percent = round((savings / listing.saving_basis.amount) * 100)
+                    
+                    deals.append({
+                        "asin": item.asin,
+                        "title": title,
+                        "image_url": image_url,
+                        "price": price,
+                        "original_price": original_price,
+                        "discount_percent": discount_percent,
+                        "detail_url": item.detail_page_url if hasattr(item, 'detail_page_url') else ""
+                    })
+                    
+                except Exception as e:
+                    logger.error(f"Error processing deal item: {str(e)}")
+                    continue
+        
+        logger.info(f"Successfully fetched {len(deals)} deals")
+        return {"deals": deals, "total": len(deals)}
+        
+    except Exception as e:
+        logger.error(f"Error fetching deals: {str(e)}")
+        # Return empty deals array - frontend will show "Coming Soon"
+        return {"deals": [], "total": 0}
 
 
 @app.get("/api/deals/{category}")
