@@ -29,32 +29,45 @@ function Home() {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className=" bg-gradient-to-r from-[#D68E9A] to-[#015A8A]  text-white py-12 px-4 w-full">
-        <div className="w-full px-4 md:px-8 text-center">
+      <section className="valentine-gradient text-white py-12 px-4 w-full relative overflow-hidden">
+        {/* Floating Hearts */}
+        <div className="hearts-background">
+          <div className="heart">💖</div>
+          <div className="heart">💕</div>
+          <div className="heart">💗</div>
+          <div className="heart">💝</div>
+          <div className="heart">💖</div>
+          <div className="heart">💕</div>
+          <div className="heart">💗</div>
+          <div className="heart">💝</div>
+          <div className="heart">💖</div>
+          <div className="heart">💕</div>
+        </div>
+        <div className="w-full px-4 md:px-8 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Today's Best Deals
+            💝 Valentine's Day Special Deals 💝
           </h1>
           <p className="text-xl mb-8">
-            Discover amazing deals curated just for you. Save big on your favorite products!
+            💕 Spread love with amazing deals! Perfect gifts for your special someone 💕
           </p>
 
           {/* Navigation Links */}
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               to="/deals"
-              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-white text-[#DC143C] px-6 py-3 rounded-lg font-semibold hover:bg-pink-100 transition-colors shadow-lg"
             >
               Deals
             </Link>
             <Link
               to="/collections"
-              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-white text-[#DC143C] px-6 py-3 rounded-lg font-semibold hover:bg-pink-100 transition-colors shadow-lg"
             >
               Collections
             </Link>
             <Link
               to="/blog"
-              className="bg-white text-[#015A8A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-white text-[#DC143C] px-6 py-3 rounded-lg font-semibold hover:bg-pink-100 transition-colors shadow-lg"
             >
               Blog
             </Link>
@@ -68,8 +81,8 @@ function Home() {
           {/* Manual Deals Section */}
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">📝 Curated Deals</h2>
-              <Link to="/collections" className="text-[#015A8A] hover:text-[#162f40] font-medium text-sm">
+              <h2 className="text-2xl font-bold">💝 Valentine's Special Deals</h2>
+              <Link to="/collections" className="text-[#DC143C] hover:text-[#C71585] font-medium text-sm">
                 See All →
               </Link>
             </div>
@@ -77,7 +90,7 @@ function Home() {
             {/* Loading State */}
             {isLoadingManual && (
               <div className="flex justify-center py-10">
-                <div className="w-12 h-12 border-4 border-[#1d3d53] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-[#FF69B4] border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
 
@@ -96,7 +109,7 @@ function Home() {
                         setSelectedDeal(deal);
                         setIsModalOpen(true);
                       }}
-                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                      className="bg-white rounded-lg shadow-md overflow-hidden valentine-card cursor-pointer"
                     >
                       {/* Product Image */}
                       {deal.imageUrl && (
@@ -118,7 +131,7 @@ function Home() {
                         {/* Category Badge Only */}
                         <div className="mb-2 flex gap-2 flex-wrap">
                           {deal.category && (
-                            <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                            <span className="inline-block px-2 py-1 bg-pink-100 text-pink-800 text-xs rounded">
                               {deal.category}
                             </span>
                           )}
@@ -126,7 +139,7 @@ function Home() {
 
                         {/* View Details Button */}
                         <button
-                          className="block w-full bg-[#1d3d53] hover:bg-[#955e3e] text-white text-center py-2 rounded-lg font-medium transition-colors text-sm"
+                          className="block w-full valentine-gradient text-white text-center py-2 rounded-lg font-medium transition-colors text-sm shadow-md hover:shadow-lg"
                         >
                           View Details
                         </button>

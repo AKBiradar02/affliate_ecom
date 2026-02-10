@@ -1,42 +1,35 @@
 import { Link } from 'react-router-dom';
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
+import { FaInstagram } from 'react-icons/fa';
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="valentine-gradient text-white">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {/* About Section */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">About AffiliStore</h3>
+            <h3 className="text-white font-bold text-lg mb-4">💕 About AffiliStore</h3>
             <p className="text-sm mb-4">
               Your trusted destination for the best deals and curated collections.
               Save big on electronics, fashion, beauty, and more!
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-white transition-colors">
-                <FaFacebook size={20} />
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                <FaTwitter size={20} />
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                <FaInstagram size={20} />
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                <FaYoutube size={20} />
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                <FaLinkedin size={20} />
+              <a
+                href="https://www.instagram.com/abhaykb02/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors hover:scale-110 transform"
+              >
+                <FaInstagram size={24} />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
+            <h3 className="text-white font-bold text-lg mb-4">💝 Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/" className="hover:text-white transition-colors">
@@ -61,41 +54,9 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Customer Service */}
-          <div>
-            <h3 className="text-white font-bold text-lg mb-4">Customer Service</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Shipping Info
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Return Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Terms & Conditions
-                </a>
-              </li>
-            </ul>
-          </div>
-
           {/* Categories */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">Popular Categories</h3>
+            <h3 className="text-white font-bold text-lg mb-4">💗 Popular Categories</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="hover:text-white transition-colors">

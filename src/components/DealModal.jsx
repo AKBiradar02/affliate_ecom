@@ -8,14 +8,14 @@ function DealModal({ deal, isOpen, onClose }) {
   // Extract coupon code from description if exists
   const extractCouponCode = (description) => {
     if (!description) return null;
-    
+
     // Look for patterns like "code: SAVE50" or "CODE: SAVE50" or "use SAVE50"
     const patterns = [
       /code[:\s]+([A-Z0-9]+)/i,
       /coupon[:\s]+([A-Z0-9]+)/i,
       /use[:\s]+([A-Z0-9]+)/i,
     ];
-    
+
     for (const pattern of patterns) {
       const match = description.match(pattern);
       if (match && match[1]) {
@@ -69,11 +69,11 @@ function DealModal({ deal, isOpen, onClose }) {
                 alt={deal.title}
                 className="max-h-full max-w-full object-contain"
               />
-              
+
               {/* Discount Badge */}
               {deal.discount && (
-                <div className="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
-                  {deal.discount}
+                <div className="absolute top-4 left-4 bg-pink-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg heartbeat">
+                  💖 {deal.discount}
                 </div>
               )}
             </div>
@@ -89,7 +89,7 @@ function DealModal({ deal, isOpen, onClose }) {
             {/* Category Badge */}
             {deal.category && (
               <div className="mb-4">
-                <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full font-medium">
+                <span className="inline-block px-3 py-1 bg-pink-100 text-pink-800 text-sm rounded-full font-medium">
                   {deal.category}
                 </span>
               </div>
@@ -99,7 +99,7 @@ function DealModal({ deal, isOpen, onClose }) {
             {deal.price && (
               <div className="mb-6">
                 <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-bold text-green-600">
+                  <span className="text-3xl font-bold text-pink-600">
                     ₹{deal.price}
                   </span>
                   {deal.originalPrice && (
@@ -123,21 +123,20 @@ function DealModal({ deal, isOpen, onClose }) {
 
             {/* Coupon Code Section */}
             {couponCode && (
-              <div className="mb-6 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-dashed border-orange-300 rounded-lg p-4">
+              <div className="mb-6 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-dashed border-pink-300 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Coupon Code</p>
-                    <p className="text-2xl font-bold text-orange-600 font-mono tracking-wider">
+                    <p className="text-2xl font-bold text-pink-600 font-mono tracking-wider">
                       {couponCode}
                     </p>
                   </div>
                   <button
                     onClick={handleCopyCoupon}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                      copiedCoupon
-                        ? 'bg-green-500 text-white'
-                        : 'bg-orange-500 text-white hover:bg-orange-600'
-                    }`}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${copiedCoupon
+                      ? 'bg-green-500 text-white'
+                      : 'bg-pink-500 text-white hover:bg-pink-600'
+                      }`}
                   >
                     {copiedCoupon ? (
                       <span className="flex items-center gap-2">
@@ -163,7 +162,7 @@ function DealModal({ deal, isOpen, onClose }) {
             <div className="flex gap-3">
               <button
                 onClick={handleVisitStore}
-                className="flex-1 bg-[#1d3d53] hover:bg-[#955e3e] text-white py-3 px-6 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                className="flex-1 valentine-gradient hover:opacity-90 text-white py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-lg"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
