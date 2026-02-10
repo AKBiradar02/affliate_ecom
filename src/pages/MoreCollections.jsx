@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
+import DealModal from '../components/DealModal';
 
 function MoreCollections() {
     const [products, setProducts] = useState([]);
     const [selectedType, setSelectedType] = useState('All');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
+    const [selectedDeal, setSelectedDeal] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const types = ['All', 'Single Product', 'Collection'];
 
@@ -111,15 +114,14 @@ function MoreCollections() {
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product.id}
-                                        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 relative flex flex-col"
+                                        onClick={() => {
+                                            setSelectedDeal(product);
+                                            setIsModalOpen(true);
+                                        }}
+                                        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 relative flex flex-col cursor-pointer"
                                     >
-                                        {/* Platform & Type Badges */}
+                                        {/* Type Badge Only */}
                                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                                            {product.platform && (
-                                                <span className="bg-[#1d3d53] text-gray-300 px-2 py-1 rounded text-xs font-semibold shadow">
-                                                    {product.platform}
-                                                </span>
-                                            )}
                                             {product.productType && (
                                                 <span className="bg-[#1d3d53] text-gray-300 px-2 py-1 rounded text-xs font-semibold shadow">
                                                     {product.productType === 'Collection' ? '📦 Collection' : '🛍️ Product'}
@@ -161,15 +163,12 @@ function MoreCollections() {
                                                 </p>
                                             )}
 
-                                            {/* Buy Button - mt-auto pushes to bottom */}
-                                            <a
-                                                href={product.affiliateUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
+                                            {/* View Details Button - mt-auto pushes to bottom */}
+                                            <button
                                                 className="block w-full bg-[#1d3d53] hover:bg-[#162f40] text-gray-300 text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg mt-auto"
                                             >
-                                                {product.productType === 'Collection' ? 'View Collection' : 'View Product'}
-                                            </a>
+                                                View Details
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -177,6 +176,13 @@ function MoreCollections() {
                         )}
                     </>
                 )}
+
+                {/* Deal Modal */}
+                <DealModal
+                    deal={selectedDeal}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                />
             </div>
         </div>
     );

@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getAffiliateLinks } from '../utils/affiliateUtils';
+import DealModal from '../components/DealModal';
 
 function Home() {
   const [manualDeals, setManualDeals] = useState([]);
   const [isLoadingManual, setIsLoadingManual] = useState(true);
+  const [selectedDeal, setSelectedDeal] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchManualDeals();
@@ -89,7 +92,11 @@ function Home() {
                   manualDeals.map((deal) => (
                     <div
                       key={deal.id}
-                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+                      onClick={() => {
+                        setSelectedDeal(deal);
+                        setIsModalOpen(true);
+                      }}
+                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
                     >
                       {/* Product Image */}
                       {deal.imageUrl && (
@@ -117,15 +124,12 @@ function Home() {
                           )}
                         </div>
 
-                        {/* Buy Button */}
-                        <a
-                          href={deal.affiliateUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        {/* View Details Button */}
+                        <button
                           className="block w-full bg-[#1d3d53] hover:bg-[#955e3e] text-white text-center py-2 rounded-lg font-medium transition-colors text-sm"
                         >
-                          View Deal
-                        </a>
+                          View Details
+                        </button>
                       </div>
                     </div>
                   ))
@@ -159,6 +163,13 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Deal Modal */}
+      <DealModal
+        deal={selectedDeal}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
