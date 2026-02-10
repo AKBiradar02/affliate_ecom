@@ -72,7 +72,7 @@ function DealModal({ deal, isOpen, onClose }) {
 
               {/* Discount Badge */}
               {deal.discount && (
-                <div className="absolute top-4 left-4 bg-pink-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg heartbeat">
+                <div className="absolute top-4 left-4 bg-pink-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
                   💖 {deal.discount}
                 </div>
               )}
@@ -162,7 +162,7 @@ function DealModal({ deal, isOpen, onClose }) {
             <div className="flex gap-3">
               <button
                 onClick={handleVisitStore}
-                className="flex-1 valentine-gradient hover:opacity-90 text-white py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-lg"
+                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-lg"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />

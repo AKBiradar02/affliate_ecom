@@ -29,25 +29,12 @@ function Home() {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="valentine-gradient text-white py-12 px-4 w-full relative overflow-hidden">
-        {/* Floating Hearts */}
-        <div className="hearts-background">
-          <div className="heart">💖</div>
-          <div className="heart">💕</div>
-          <div className="heart">💗</div>
-          <div className="heart">💝</div>
-          <div className="heart">💖</div>
-          <div className="heart">💕</div>
-          <div className="heart">💗</div>
-          <div className="heart">💝</div>
-          <div className="heart">💖</div>
-          <div className="heart">💕</div>
-        </div>
-        <div className="w-full px-4 md:px-8 text-center relative z-10">
+      <section className="valentine-gradient-soft text-gray-800 py-12 px-4 w-full">
+        <div className="w-full px-4 md:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             💝 Valentine's Day Special Deals 💝
           </h1>
-          <p className="text-xl mb-8">
+          <p className="text-xl mb-8 text-gray-700">
             💕 Spread love with amazing deals! Perfect gifts for your special someone 💕
           </p>
 
@@ -55,7 +42,7 @@ function Home() {
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               to="/deals"
-              className="bg-white text-[#DC143C] px-6 py-3 rounded-lg font-semibold hover:bg-pink-100 transition-colors shadow-lg"
+              className="bg-white text-pink-600 px-6 py-3 rounded-lg font-semibold hover:bg-pink-50 transition-colors shadow-md border-2 border-pink-200"
             >
               Deals
             </Link>
@@ -82,7 +69,7 @@ function Home() {
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">💝 Valentine's Special Deals</h2>
-              <Link to="/collections" className="text-[#DC143C] hover:text-[#C71585] font-medium text-sm">
+              <Link to="/collections" className="text-pink-600 hover:text-pink-700 font-medium text-sm">
                 See All →
               </Link>
             </div>
@@ -90,7 +77,7 @@ function Home() {
             {/* Loading State */}
             {isLoadingManual && (
               <div className="flex justify-center py-10">
-                <div className="w-12 h-12 border-4 border-[#FF69B4] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
 
@@ -139,7 +126,7 @@ function Home() {
 
                         {/* View Details Button */}
                         <button
-                          className="block w-full valentine-gradient text-white text-center py-2 rounded-lg font-medium transition-colors text-sm shadow-md hover:shadow-lg"
+                          className="block w-full bg-pink-500 hover:bg-pink-600 text-white text-center py-2 rounded-lg font-medium transition-colors text-sm shadow-md"
                         >
                           View Details
                         </button>

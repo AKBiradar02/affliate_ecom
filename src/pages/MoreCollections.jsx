@@ -86,7 +86,7 @@ function MoreCollections() {
                 {/* Loading State */}
                 {isLoading && (
                     <div className="flex justify-center py-20">
-                        <div className="w-16 h-16 border-4 border-[#FF69B4] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-16 h-16 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 )}
 
@@ -123,7 +123,7 @@ function MoreCollections() {
                                         {/* Type Badge Only */}
                                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                                             {product.productType && (
-                                                <span className="bg-pink-500 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+                                                <span className="bg-pink-400 text-white px-2 py-1 rounded text-xs font-semibold shadow">
                                                     {product.productType === 'Collection' ? '📦 Collection' : '🛍️ Product'}
                                                 </span>
                                             )}
@@ -165,7 +165,7 @@ function MoreCollections() {
 
                                             {/* View Details Button - mt-auto pushes to bottom */}
                                             <button
-                                                className="block w-full valentine-gradient text-white text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg mt-auto"
+                                                className="block w-full bg-pink-500 hover:bg-pink-600 text-white text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg mt-auto"
                                             >
                                                 View Details
                                             </button>
