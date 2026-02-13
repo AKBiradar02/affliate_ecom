@@ -75,8 +75,18 @@ class EarnkaroConverter:
                 details = self._scrape_flipkart(soup, url)
             elif "amazon.in" in url or "amazon.com" in url:
                 details = self._scrape_amazon(soup, url)
+            elif "myntra.com" in url:
+                details = self._scrape_myntra(soup, url)
+            elif "ajio.com" in url:
+                details = self._scrape_ajio(soup, url)
+            elif "nykaa.com" in url:
+                details = self._scrape_nykaa(soup, url)
+            elif "tatacliq.com" in url:
+                details = self._scrape_tatacliq(soup, url)
+            elif "snapdeal.com" in url:
+                details = self._scrape_snapdeal(soup, url)
             else:
-                # Generic scraping
+                # Generic scraping with improved fallbacks
                 details = self._scrape_generic(soup, url)
             
             return details
@@ -232,7 +242,7 @@ class EarnkaroConverter:
         
         return "General"
     
-    def _scrape_amazon(self, soup) -> dict:
+    def _scrape_amazon(self, soup, url) -> dict:
         """Scrape Amazon product details"""
         details = {}
         
@@ -252,9 +262,12 @@ class EarnkaroConverter:
         desc_tag = soup.find('div', {'id': 'feature-bullets'})
         details['description'] = desc_tag.text.strip()[:200] if desc_tag else ""
         
+        # Category
+        details['category'] = self._extract_category(url, soup)
+        
         return details
     
-    def _scrape_generic(self, soup) -> dict:
+    def _scrape_generic(self, soup, url) -> dict:
         """Generic scraping for unknown platforms"""
         details = {}
         
@@ -275,4 +288,219 @@ class EarnkaroConverter:
         desc_tag = soup.find('meta', {'name': 'description'}) or soup.find('meta', {'property': 'og:description'})
         details['description'] = desc_tag.get('content', '')[:200] if desc_tag else ""
         
+        # Category
+        details['category'] = self._extract_category(url, soup)
+        
         return details
+    
+    def _scrape_myntra(self, soup, url) -> dict:
+        """Scrape Myntra product details"""
+        details = {}
+        
+        # Title - try multiple selectors
+        title_selectors = [
+            ('h1', {'class': 'pdp-title'}),
+            ('h1', {'class': 'pdp-name'}),
+            ('meta', {'property': 'og:title'}),
+        ]
+        
+        title = ""
+        for tag_name, attrs in title_selectors:
+            title_tag = soup.find(tag_name, attrs)
+            if title_tag:
+                if tag_name == 'meta':
+                    title = title_tag.get('content', '')
+                else:
+                    title = title_tag.text.strip()
+                if title:
+                    break
+        
+        details['title'] = title
+        print(f"Myntra Title: {title[:50] if title else 'NOT FOUND'}")
+        
+        # Image
+        img_selectors = [
+            ('div', {'class': 'image-grid-image'}),
+            ('img', {'class': 'image-grid-image'}),
+            ('meta', {'property': 'og:image'}),
+        ]
+        
+        image_url = ""
+        for tag_name, attrs in img_selectors:
+            img_tag = soup.find(tag_name, attrs)
+            if img_tag:
+                if tag_name == 'meta':
+                    image_url = img_tag.get('content', '')
+                elif tag_name == 'img':
+                    image_url = img_tag.get('src', '') or img_tag.get('data-src', '')
+                elif tag_name == 'div':
+                    style = img_tag.get('style', '')
+                    match = re.search(r'url\(["\']?([^"\']+)["\']?\)', style)
+                    if match:
+                        image_url = match.group(1)
+                if image_url:
+                    break
+        
+        details['imageUrl'] = image_url
+        print(f"Myntra Image: {image_url[:50] if image_url else 'NOT FOUND'}")
+        
+        # Price
+        price_selectors = [
+            ('span', {'class': 'pdp-price'}),
+            ('strong', {'class': 'pdp-price'}),
+            ('div', {'class': 'pdp-price'}),
+        ]
+        
+        price = ""
+        for tag_name, attrs in price_selectors:
+            price_tag = soup.find(tag_name, attrs)
+            if price_tag:
+                price = price_tag.text.strip()
+                if price and '₹' in price:
+                    break
+        
+        # Fallback: regex search
+        if not price:
+            price_pattern = re.compile(r'₹[\d,]+')
+            price_matches = soup.find_all(text=price_pattern)
+            if price_matches:
+                price = price_matches[0].strip()
+        
+        details['price'] = price
+        print(f"Myntra Price: {price if price else 'NOT FOUND'}")
+        
+        # Description
+        desc_selectors = [
+            ('div', {'class': 'pdp-product-description-content'}),
+            ('p', {'class': 'pdp-product-description-content'}),
+            ('meta', {'name': 'description'}),
+        ]
+        
+        description = ""
+        for tag_name, attrs in desc_selectors:
+            desc_tag = soup.find(tag_name, attrs)
+            if desc_tag:
+                if tag_name == 'meta':
+                    description = desc_tag.get('content', '')
+                else:
+                    description = desc_tag.text.strip()
+                if description:
+                    break
+        
+        details['description'] = description[:200] if description else ""
+        details['category'] = self._extract_category(url, soup)
+        
+        return details
+    
+    def _scrape_ajio(self, soup, url) -> dict:
+        """Scrape Ajio product details"""
+        details = {}
+        
+        # Title
+        title_tag = soup.find('h1', {'class': 'prod-title'}) or soup.find('meta', {'property': 'og:title'})
+        details['title'] = title_tag.get('content', '') if title_tag and title_tag.name == 'meta' else (title_tag.text.strip() if title_tag else "")
+        
+        # Image
+        img_tag = soup.find('img', {'class': 'rilrtl-lazy-img'}) or soup.find('meta', {'property': 'og:image'})
+        details['imageUrl'] = img_tag.get('content', '') if img_tag and img_tag.name == 'meta' else (img_tag.get('src', '') or img_tag.get('data-src', '') if img_tag else "")
+        
+        # Price
+        price_tag = soup.find('span', {'class': 'prod-sp'}) or soup.find('div', {'class': 'prod-sp'})
+        if price_tag:
+            details['price'] = price_tag.text.strip()
+        else:
+            price_pattern = re.compile(r'₹[\d,]+')
+            price_match = soup.find(text=price_pattern)
+            details['price'] = price_match.strip() if price_match else ""
+        
+        # Description
+        desc_tag = soup.find('div', {'class': 'prod-desc'}) or soup.find('meta', {'name': 'description'})
+        details['description'] = desc_tag.get('content', '')[:200] if desc_tag and desc_tag.name == 'meta' else (desc_tag.text.strip()[:200] if desc_tag else "")
+        
+        details['category'] = self._extract_category(url, soup)
+        return details
+    
+    def _scrape_nykaa(self, soup, url) -> dict:
+        """Scrape Nykaa product details"""
+        details = {}
+        
+        # Title
+        title_tag = soup.find('h1', {'class': 'css-1gc4x7i'}) or soup.find('meta', {'property': 'og:title'})
+        details['title'] = title_tag.get('content', '') if title_tag and title_tag.name == 'meta' else (title_tag.text.strip() if title_tag else "")
+        
+        # Image
+        img_tag = soup.find('img', {'class': 'css-1l8vkz'}) or soup.find('meta', {'property': 'og:image'})
+        details['imageUrl'] = img_tag.get('content', '') if img_tag and img_tag.name == 'meta' else (img_tag.get('src', '') if img_tag else "")
+        
+        # Price
+        price_tag = soup.find('span', {'class': 'css-1jczs19'}) or soup.find('span', {'class': 'post-card__content-price-offer'})
+        if price_tag:
+            details['price'] = price_tag.text.strip()
+        else:
+            price_pattern = re.compile(r'₹[\d,]+')
+            price_match = soup.find(text=price_pattern)
+            details['price'] = price_match.strip() if price_match else ""
+        
+        # Description
+        desc_tag = soup.find('div', {'class': 'css-w7kco8'}) or soup.find('meta', {'name': 'description'})
+        details['description'] = desc_tag.get('content', '')[:200] if desc_tag and desc_tag.name == 'meta' else (desc_tag.text.strip()[:200] if desc_tag else "")
+        
+        details['category'] = "Beauty & Daily Needs"
+        return details
+    
+    def _scrape_tatacliq(self, soup, url) -> dict:
+        """Scrape TataCliq product details"""
+        details = {}
+        
+        # Title
+        title_tag = soup.find('h1', {'class': 'ProductDetailsMainCard__productName'}) or soup.find('meta', {'property': 'og:title'})
+        details['title'] = title_tag.get('content', '') if title_tag and title_tag.name == 'meta' else (title_tag.text.strip() if title_tag else "")
+        
+        # Image
+        img_tag = soup.find('img', {'class': 'ProductDetailsMainCard__productImage'}) or soup.find('meta', {'property': 'og:image'})
+        details['imageUrl'] = img_tag.get('content', '') if img_tag and img_tag.name == 'meta' else (img_tag.get('src', '') if img_tag else "")
+        
+        # Price
+        price_tag = soup.find('h3', {'class': 'ProductDetailsMainCard__price'})
+        if price_tag:
+            details['price'] = price_tag.text.strip()
+        else:
+            price_pattern = re.compile(r'₹[\d,]+')
+            price_match = soup.find(text=price_pattern)
+            details['price'] = price_match.strip() if price_match else ""
+        
+        # Description
+        desc_tag = soup.find('div', {'class': 'ProductDetailsMainCard__description'}) or soup.find('meta', {'name': 'description'})
+        details['description'] = desc_tag.get('content', '')[:200] if desc_tag and desc_tag.name == 'meta' else (desc_tag.text.strip()[:200] if desc_tag else "")
+        
+        details['category'] = self._extract_category(url, soup)
+        return details
+    
+    def _scrape_snapdeal(self, soup, url) -> dict:
+        """Scrape Snapdeal product details"""
+        details = {}
+        
+        # Title
+        title_tag = soup.find('h1', {'itemprop': 'name'}) or soup.find('meta', {'property': 'og:title'})
+        details['title'] = title_tag.get('content', '') if title_tag and title_tag.name == 'meta' else (title_tag.text.strip() if title_tag else "")
+        
+        # Image
+        img_tag = soup.find('img', {'itemprop': 'image'}) or soup.find('meta', {'property': 'og:image'})
+        details['imageUrl'] = img_tag.get('content', '') if img_tag and img_tag.name == 'meta' else (img_tag.get('src', '') if img_tag else "")
+        
+        # Price
+        price_tag = soup.find('span', {'itemprop': 'price'}) or soup.find('span', {'class': 'payBlkBig'})
+        if price_tag:
+            details['price'] = f"₹{price_tag.text.strip()}"
+        else:
+            price_pattern = re.compile(r'₹[\d,]+')
+            price_match = soup.find(text=price_pattern)
+            details['price'] = price_match.strip() if price_match else ""
+        
+        # Description
+        desc_tag = soup.find('div', {'itemprop': 'description'}) or soup.find('meta', {'name': 'description'})
+        details['description'] = desc_tag.get('content', '')[:200] if desc_tag and desc_tag.name == 'meta' else (desc_tag.text.strip()[:200] if desc_tag else "")
+        
+        details['category'] = self._extract_category(url, soup)
+        return details
+
