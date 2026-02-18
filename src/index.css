@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
-/* Valentine's Day Theme - Light & Minimal */
+/* AffiliStore - Clean E-commerce Theme */
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  /* Light Valentine's Color Palette */
-  --valentine-light-pink: #FFE4E1;
-  --valentine-soft-pink: #FFB6C1;
-  --valentine-accent-pink: #FF69B4;
-  --valentine-rose: #FFC0CB;
+  /* Brand Color Palette */
+  --brand-primary: #1d3d53;
+  --brand-secondary: #2F4156;
+  --brand-accent: #4a90a4;
+  --brand-light: #f0f4f8;
 }
 
-/* Light Valentine's Gradient */
-.valentine-gradient {
-  background: linear-gradient(135deg, #FFE4E1 0%, #FFB6C1 100%);
+/* Hero Gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #1d3d53 0%, #2F4156 100%);
 }
 
-.valentine-gradient-soft {
-  background: linear-gradient(135deg, #FFF5F7 0%, #FFE4E1 100%);
+.hero-gradient-soft {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2eaf0 100%);
 }
 
 /* Line clamp utilities */
@@ -39,14 +39,14 @@
   overflow: hidden;
 }
 
-/* Valentine's Card Hover Effect */
-.valentine-card {
+/* Product Card Hover Effect */
+.product-card {
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
 
-.valentine-card:hover {
-  border-color: #FFB6C1;
-  box-shadow: 0 10px 30px rgba(255, 182, 193, 0.2);
+.product-card:hover {
+  border-color: #4a90a4;
+  box-shadow: 0 10px 30px rgba(29, 61, 83, 0.12);
   transform: translateY(-5px);
 }

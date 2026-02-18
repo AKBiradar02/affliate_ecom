@@ -41,9 +41,9 @@ function MoreCollections() {
         <div className="bg-gray-50 min-h-screen py-8 w-full">
             <div className="w-full px-4 md:px-8">
                 {/* Header */}
-                <div className="mb-8 valentine-gradient-soft rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-200 text-center">
-                    <h1 className="text-4xl text-gray-800 font-bold mb-2">💕 Valentine's Gift Collections 💕</h1>
-                    <p className="text-gray-800">Perfect gifts for your loved ones</p>
+                <div className="mb-8 hero-gradient-soft rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-200 text-center">
+                    <h1 className="text-4xl text-gray-800 font-bold mb-2">🛍️ All Collections</h1>
+                    <p className="text-gray-600">Browse our full range of curated products</p>
                 </div>
 
                 {/* Filters */}
@@ -86,7 +86,7 @@ function MoreCollections() {
                 {/* Loading State */}
                 {isLoading && (
                     <div className="flex justify-center py-20">
-                        <div className="w-16 h-16 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-16 h-16 border-4 border-[#1d3d53] border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 )}
 
@@ -118,12 +118,12 @@ function MoreCollections() {
                                             setSelectedDeal(product);
                                             setIsModalOpen(true);
                                         }}
-                                        className="bg-white rounded-lg shadow-md overflow-hidden valentine-card relative flex flex-col cursor-pointer"
+                                        className="bg-white rounded-lg shadow-md overflow-hidden product-card relative flex flex-col cursor-pointer"
                                     >
                                         {/* Type Badge Only */}
                                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                                             {product.productType && (
-                                                <span className="bg-pink-400 text-white px-2 py-1 rounded text-xs font-semibold shadow">
+                                                <span className="bg-[#1d3d53] text-white px-2 py-1 rounded text-xs font-semibold shadow">
                                                     {product.productType === 'Collection' ? '📦 Collection' : '🛍️ Product'}
                                                 </span>
                                             )}
@@ -151,7 +151,7 @@ function MoreCollections() {
 
                                             {/* Category */}
                                             {product.category && (
-                                                <span className="inline-block bg-pink-100 text-pink-800 text-xs px-3 py-1 rounded-full mb-3">
+                                                <span className="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full mb-3">
                                                     {product.category}
                                                 </span>
                                             )}
@@ -165,7 +165,7 @@ function MoreCollections() {
 
                                             {/* View Details Button - mt-auto pushes to bottom */}
                                             <button
-                                                className="block w-full bg-pink-500 hover:bg-pink-600 text-white text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg mt-auto"
+                                                className="block w-full bg-[#1d3d53] hover:bg-[#2F4156] text-white text-center py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg mt-auto"
                                             >
                                                 View Details
                                             </button>

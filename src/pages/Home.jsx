@@ -29,32 +29,32 @@ function Home() {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="valentine-gradient-soft text-gray-800 py-12 px-4 w-full">
+      <section className="hero-gradient-soft text-gray-800 py-12 px-4 w-full">
         <div className="w-full px-4 md:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            💝 Valentine's Day Special Deals 💝
+            🛍️ Best Deals & Offers
           </h1>
           <p className="text-xl mb-8 text-gray-700">
-            💕 Spread love with amazing deals! Perfect gifts for your special someone 💕
+            Discover top-rated products at unbeatable prices across all categories
           </p>
 
           {/* Navigation Links */}
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               to="/deals"
-              className="bg-white text-pink-600 px-6 py-3 rounded-lg font-semibold hover:bg-pink-50 transition-colors shadow-md border-2 border-pink-200"
+              className="bg-white text-[#1d3d53] px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-md border-2 border-[#1d3d53]"
             >
               Deals
             </Link>
             <Link
               to="/collections"
-              className="bg-white text-[#DC143C] px-6 py-3 rounded-lg font-semibold hover:bg-pink-100 transition-colors shadow-lg"
+              className="bg-white text-[#1d3d53] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
             >
               Collections
             </Link>
             <Link
               to="/blog"
-              className="bg-white text-[#DC143C] px-6 py-3 rounded-lg font-semibold hover:bg-pink-100 transition-colors shadow-lg"
+              className="bg-white text-[#1d3d53] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
             >
               Blog
             </Link>
@@ -68,8 +68,8 @@ function Home() {
           {/* Manual Deals Section */}
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">💝 Valentine's Special Deals</h2>
-              <Link to="/collections" className="text-pink-600 hover:text-pink-700 font-medium text-sm">
+              <h2 className="text-2xl font-bold">🔥 Curated Deals</h2>
+              <Link to="/collections" className="text-[#1d3d53] hover:text-[#2F4156] font-medium text-sm">
                 See All →
               </Link>
             </div>
@@ -96,7 +96,7 @@ function Home() {
                         setSelectedDeal(deal);
                         setIsModalOpen(true);
                       }}
-                      className="bg-white rounded-lg shadow-md overflow-hidden valentine-card cursor-pointer"
+                      className="bg-white rounded-lg shadow-md overflow-hidden product-card cursor-pointer"
                     >
                       {/* Product Image */}
                       {deal.imageUrl && (
@@ -126,7 +126,7 @@ function Home() {
 
                         {/* View Details Button */}
                         <button
-                          className="block w-full bg-pink-500 hover:bg-pink-600 text-white text-center py-2 rounded-lg font-medium transition-colors text-sm shadow-md"
+                          className="block w-full bg-[#1d3d53] hover:bg-[#2F4156] text-white text-center py-2 rounded-lg font-medium transition-colors text-sm shadow-md"
                         >
                           View Details
                         </button>
