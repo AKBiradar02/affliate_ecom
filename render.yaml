@@ -8,13 +8,15 @@ services:
     buildCommand: pip install -r backend/requirements.txt
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: AMAZON_ACCESS_KEY
+      - key: AMAZON_CREDENTIAL_ID
         sync: false
-      - key: AMAZON_SECRET_KEY
+      - key: AMAZON_CREDENTIAL_SECRET
         sync: false
       - key: AMAZON_PARTNER_TAG
         sync: false
-      - key: AMAZON_REGION
-        value: IN
+      - key: AMAZON_API_VERSION
+        value: "2.2"
+      - key: AMAZON_MARKETPLACE
+        value: www.amazon.in
       - key: FRONTEND_URL
         sync: false
