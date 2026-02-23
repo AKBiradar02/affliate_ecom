@@ -401,12 +401,40 @@ async def convert_earnkaro_url(request: EarnkaroConvertRequest):
     try:
         logger.info(f"Converting URL: {request.url}")
         converter = EarnkaroConverter()
-        conversion_result = converter.convert_url(request.url)
 
+        # Step 1: Convert the URL to an affiliate link
+        conversion_result = converter.convert_url(request.url)
         if conversion_result.get("error"):
             raise HTTPException(status_code=400, detail=conversion_result.get("message", "Conversion failed"))
 
+        # Step 2: Try direct scraping first (fast, uses og: meta tags)
         product_details = converter.scrape_product_details(request.url)
+
+        # Step 3: If direct scraping got nothing (bot-protected site like Ajio),
+        # fall back to Earnkaro's own scraping API — their servers are whitelisted
+        # by affiliate partner platforms, bypassing Cloudflare/bot protection.
+        if not product_details.get("title") and not product_details.get("imageUrl"):
+            logger.info("Direct scrape failed, trying Earnkaro convert_and_scrape...")
+            ek_data = converter.convert_and_scrape(request.url)
+            # Earnkaro returns product info in different possible keys
+            if ek_data and not ek_data.get("error"):
+                product_details["title"] = (
+                    ek_data.get("product_name") or
+                    ek_data.get("title") or
+                    ek_data.get("name") or
+                    product_details.get("title", "")
+                )
+                product_details["imageUrl"] = (
+                    ek_data.get("image") or
+                    ek_data.get("imageUrl") or
+                    ek_data.get("product_image") or
+                    product_details.get("imageUrl", "")
+                )
+                product_details["price"] = (
+                    ek_data.get("price") or
+                    ek_data.get("selling_price") or
+                    product_details.get("price", "")
+                )
 
         return {
             "success": True,
