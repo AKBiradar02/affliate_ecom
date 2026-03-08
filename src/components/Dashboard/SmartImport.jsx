@@ -16,6 +16,7 @@ function SmartImport({ onSuccess }) {
     const [editImageUrl, setEditImageUrl] = useState('');
     const [editDescription, setEditDescription] = useState('');
     const [editCategory, setEditCategory] = useState('');
+    const [editCouponCode, setEditCouponCode] = useState('');
 
     const CATEGORIES = [
         'Electronics', 'Fashion', 'Home & Kitchen', 'Beauty & Daily Needs',
@@ -86,6 +87,7 @@ function SmartImport({ onSuccess }) {
                 category: editCategory,
                 imageUrl: editImageUrl.trim(),
                 price: editPrice.trim(),
+                couponCode: editCouponCode.trim(),
                 platform: productData.platform,
                 productType: 'Single Product',
                 createdAt: serverTimestamp(),
@@ -95,7 +97,7 @@ function SmartImport({ onSuccess }) {
             setProductData(null);
             setUrl('');
             setEditTitle(''); setEditPrice(''); setEditImageUrl('');
-            setEditDescription(''); setEditCategory('');
+            setEditDescription(''); setEditCategory(''); setEditCouponCode('');
 
             if (onSuccess) onSuccess();
             setTimeout(() => setSuccess(''), 3000);
@@ -110,7 +112,7 @@ function SmartImport({ onSuccess }) {
     const handleReset = () => {
         setUrl(''); setProductData(null); setError(''); setSuccess('');
         setEditTitle(''); setEditPrice(''); setEditImageUrl('');
-        setEditDescription(''); setEditCategory('');
+        setEditDescription(''); setEditCategory(''); setEditCouponCode('');
     };
 
     const handleKeyDown = (e) => {
@@ -264,20 +266,34 @@ function SmartImport({ onSuccess }) {
                                     />
                                 </div>
 
-                                {/* Price */}
-                                <div>
-                                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                                        Price
-                                        {editPrice && <span className="ml-2 text-green-600">✓</span>}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={editPrice}
-                                        onChange={(e) => setEditPrice(e.target.value)}
-                                        placeholder="e.g. ₹1,499"
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    />
-                                </div>
+                                 {/* Price */}
+                                 <div>
+                                     <label className="block text-xs font-medium text-gray-600 mb-1">
+                                         Price <span className="text-amber-500 font-semibold text-xs">(shows on card — enter manually if not auto-filled)</span>
+                                         {editPrice && <span className="ml-2 text-green-600">✓</span>}
+                                     </label>
+                                     <input
+                                         type="text"
+                                         value={editPrice}
+                                         onChange={(e) => setEditPrice(e.target.value)}
+                                         placeholder="e.g. ₹1,499"
+                                         className={`w-full border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!editPrice ? 'border-amber-300 bg-amber-50' : 'border-gray-300'}`}
+                                     />
+                                 </div>
+
+                                 {/* Coupon Code */}
+                                 <div>
+                                     <label className="block text-xs font-medium text-gray-600 mb-1">
+                                         🏷️ Coupon Code <span className="text-gray-400">(optional)</span>
+                                     </label>
+                                     <input
+                                         type="text"
+                                         value={editCouponCode}
+                                         onChange={(e) => setEditCouponCode(e.target.value.toUpperCase())}
+                                         placeholder="e.g. SAVE20 or FLAT30"
+                                         className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono tracking-widest uppercase"
+                                     />
+                                 </div>
 
                                 {/* Category */}
                                 <div>

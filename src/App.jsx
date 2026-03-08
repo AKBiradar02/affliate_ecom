@@ -11,6 +11,10 @@ import Login from './pages/Login';
 import ProductsPage from './pages/ProductsPage';
 import DealsPage from './pages/DealsPage';
 import MoreCollections from './pages/MoreCollections';
+import ContactPage from './pages/ContactPage';
+import SupportPage from './pages/SupportPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import AffiliateDisclosure from './pages/AffiliateDisclosure';
 import './App.css';
 
 function App() {
@@ -55,6 +59,10 @@ function App() {
               <Route path="/deals" element={<DealsPage />} />
               <Route path="/collections" element={<MoreCollections />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/support" element={<SupportPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/affiliate-disclosure" element={<AffiliateDisclosure />} />
             </Routes>
           </main>
           <Footer />
